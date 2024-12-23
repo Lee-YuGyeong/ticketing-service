@@ -2,6 +2,7 @@ package com.yugyeong.ticketing_service.presentation.controller.auth;
 
 import com.yugyeong.ticketing_service.application.service.user.UserService;
 import com.yugyeong.ticketing_service.presentation.dto.user.JoinRequestDto;
+import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,9 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(SuccessResponse.builder()
-                .title("회원가입 성공")
-                .status(HttpStatus.CREATED.value())
-                .detail("회원가입이 성공적으로 완료되었습니다.")
+                .title(SuccessCode.JOIN_SUCCESS.getTitle())
+                .status(SuccessCode.JOIN_SUCCESS.getStatus().value())
+                .detail(SuccessCode.JOIN_SUCCESS.getDetail())
                 .build());
     }
 
