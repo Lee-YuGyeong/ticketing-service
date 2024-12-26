@@ -21,6 +21,7 @@ import com.yugyeong.ticketing_service.domain.entity.User;
 import com.yugyeong.ticketing_service.domain.repository.UserRepository;
 import com.yugyeong.ticketing_service.infrastructure.config.security.PrincipalDetails;
 import com.yugyeong.ticketing_service.presentation.dto.user.JoinRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.user.UserResponseDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import java.util.Optional;
@@ -123,4 +124,35 @@ class UserServiceTest {
         assertEquals(ErrorCode.ID_PASSWORD_NOT_MATCHED, exception.getErrorCode());
     }
 
+    @Test
+    void 사용자_조회_성공() {
+        //given
+        User user = new User(VALID_EMAIL, VALID_USERNAME, VALID_PASSWORD, Role.USER);
+        when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(user));
+
+        //when
+        UserResponseDto userResponseDto = userService.getUserByEmail(VALID_EMAIL);
+
+        //then
+        assertNotNull(userResponseDto);
+        assertEquals(VALID_EMAIL, userResponseDto.getEmail());
+        assertEquals(VALID_USERNAME, userResponseDto.getUsername());
+
+    }
+
+    @Test
+    void 사용자_조회_실패() {
+        //given
+        String invalidEmail = "invalid@test.com";
+        when(userRepository.findByEmail(invalidEmail)).thenReturn(Optional.empty());
+
+        //when
+        CustomException exception = assertThrows(CustomException.class,
+            () -> userService.getUserByEmail(invalidEmail));
+
+        //then
+        assertEquals(ErrorCode.USER_NOT_FOUND.getDetail(), exception.getMessage());
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+
+    }
 }
