@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yugyeong.ticketing_service.application.service.auth.PrincipalDetailsService;
 import com.yugyeong.ticketing_service.application.service.user.UserService;
 import com.yugyeong.ticketing_service.presentation.dto.user.JoinRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
@@ -34,6 +35,10 @@ class AuthControllerTest {
 
     @MockitoBean
     private UserService userService;
+
+    @MockitoBean
+    private PrincipalDetailsService principalDetailsService;
+
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -76,7 +81,7 @@ class AuthControllerTest {
             .andExpect(
                 jsonPath("$.status").value(ErrorCode.EMAIL_ALREADY_EXISTS.getStatus().value()))
             .andExpect(jsonPath("$.detail").value(ErrorCode.EMAIL_ALREADY_EXISTS.getDetail()));
-        
+
     }
 
 }
