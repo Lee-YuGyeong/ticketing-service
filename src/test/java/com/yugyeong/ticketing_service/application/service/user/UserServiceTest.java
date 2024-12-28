@@ -155,4 +155,49 @@ class UserServiceTest {
         assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
 
     }
+
+    @Test
+    void 사용자_탈퇴_성공() {
+        //given
+        User user = new User(VALID_EMAIL, VALID_USERNAME, VALID_PASSWORD, Role.USER);
+        when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(user));
+
+        //when
+        userService.deactivateUser(VALID_EMAIL);
+
+        //then
+        assertEquals(user.getStatus(), false);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void 사용자_탈퇴_실패_사용자_없음() {
+        //given
+        String invalidEmail = "invalid@test.com";
+        when(userRepository.findByEmail(invalidEmail)).thenReturn(Optional.empty());
+
+        //when
+        CustomException exception = assertThrows(CustomException.class,
+            () -> userService.deactivateUser(invalidEmail));
+
+        //then
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void 사용자_탈퇴_실패_이미_탈퇴됨() {
+        //given
+        User user = new User(VALID_EMAIL, VALID_USERNAME, VALID_PASSWORD, Role.USER);
+        when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(user));
+        user.deactivate();
+
+        //when
+        CustomException exception = assertThrows(CustomException.class,
+            () -> userService.deactivateUser(VALID_EMAIL));
+
+        //then
+        assertEquals(ErrorCode.USER_ALREADY_DEACTIVATE, exception.getErrorCode());
+        verify(userRepository, never()).save(any());
+    }
 }

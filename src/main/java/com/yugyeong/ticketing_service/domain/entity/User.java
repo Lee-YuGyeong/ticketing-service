@@ -1,6 +1,8 @@
 package com.yugyeong.ticketing_service.domain.entity;
 
 import com.yugyeong.ticketing_service.domain.Role;
+import com.yugyeong.ticketing_service.presentation.exception.CustomException;
+import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,6 +31,8 @@ public class User extends BaseEntity {
 
     private String password;
 
+    private Boolean status = true;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -38,5 +42,15 @@ public class User extends BaseEntity {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    /**
+     * 사용자 탈퇴 메소드
+     */
+    public void deactivate() {
+        if (!this.status) {
+            throw new CustomException(ErrorCode.USER_ALREADY_DEACTIVATE);
+        }
+        this.status = false;
     }
 }

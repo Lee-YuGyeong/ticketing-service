@@ -42,4 +42,13 @@ public class UserService {
             .username(user.getUsername())
             .build();
     }
+
+    public void deactivateUser(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.deactivate();
+        userRepository.save(user);
+
+    }
 }

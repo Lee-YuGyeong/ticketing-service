@@ -67,5 +67,10 @@ class UserControllerTest {
 
     }
 
+    @Test
+    void 사용자_탈퇴_성공() {
+
+    }
+
 
 }

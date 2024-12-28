@@ -16,7 +16,10 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS("/errors/email-already-exists", "EMAIL ALREADY EXIST", HttpStatus.CONFLICT
         , "이미 사용 중인 이메일입니다."),
     USER_NOT_FOUND("/errors/user-not-found", "USER NOT FOUND", HttpStatus.NOT_FOUND,
-        "사용자가 존재하지 않습니다.");
+        "사용자가 존재하지 않습니다."),
+    USER_ALREADY_DEACTIVATE("/errors/user-already-deactivate", "USER ALREADY DEACTIVATE",
+        HttpStatus.CONFLICT,
+        "이미 탈퇴한 사용자입니다.");
 
 
     private final String type;
