@@ -1,7 +1,7 @@
 package com.yugyeong.ticketing_service.presentation.controller.auth;
 
 import com.yugyeong.ticketing_service.application.service.user.UserService;
-import com.yugyeong.ticketing_service.presentation.dto.user.JoinRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.user.UserJoinRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ public class AuthController {
 
     @PostMapping("/join")
     public ResponseEntity<SuccessResponse> join(
-        @Valid @RequestBody final JoinRequestDto joinRequestDto) {
+        @Valid @RequestBody final UserJoinRequestDto joinRequestDto) {
 
         userService.join(joinRequestDto);
 

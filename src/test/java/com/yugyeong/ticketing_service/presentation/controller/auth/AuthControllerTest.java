@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yugyeong.ticketing_service.application.service.auth.PrincipalDetailsService;
 import com.yugyeong.ticketing_service.application.service.user.UserService;
-import com.yugyeong.ticketing_service.presentation.dto.user.JoinRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.user.UserJoinRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
@@ -46,9 +46,9 @@ class AuthControllerTest {
     @Test
     void 회원가입_성공() throws Exception {
         //given
-        JoinRequestDto joinRequestDto = new JoinRequestDto(VALID_EMAIL, VALID_USERNAME,
+        UserJoinRequestDto joinRequestDto = new UserJoinRequestDto(VALID_EMAIL, VALID_USERNAME,
             VALID_PASSWORD);
-        doNothing().when(userService).join(any(JoinRequestDto.class));
+        doNothing().when(userService).join(any(UserJoinRequestDto.class));
 
         //when & then
         mockMvc.perform(post("/auth/join")
@@ -65,11 +65,11 @@ class AuthControllerTest {
     @Test
     void 회원가입_실패_이메일_중복() throws Exception {
         //given
-        JoinRequestDto joinRequestDto = new JoinRequestDto(VALID_EMAIL, VALID_USERNAME,
+        UserJoinRequestDto joinRequestDto = new UserJoinRequestDto(VALID_EMAIL, VALID_USERNAME,
             VALID_PASSWORD);
 
         doThrow(new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS)).when(userService).join(any(
-            JoinRequestDto.class));
+            UserJoinRequestDto.class));
 
         //when & then
         mockMvc.perform(post("/auth/join")

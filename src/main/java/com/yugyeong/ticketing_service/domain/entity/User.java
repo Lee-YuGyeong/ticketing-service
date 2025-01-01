@@ -44,6 +44,15 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
+    public void updateProfile(String username, String password) {
+        if (username != null && !username.isEmpty()) {
+            this.username = username;
+        }
+        if (password != null && !password.isEmpty()) {
+            this.password = password; //인코딩해서 들어가야함
+        }
+    }
+
     /**
      * 사용자 탈퇴 메소드
      */
@@ -53,4 +62,5 @@ public class User extends BaseEntity {
         }
         this.status = false;
     }
+
 }

@@ -2,14 +2,18 @@ package com.yugyeong.ticketing_service.presentation.controller.user;
 
 import com.yugyeong.ticketing_service.application.service.user.UserService;
 import com.yugyeong.ticketing_service.presentation.dto.user.UserResponseDto;
+import com.yugyeong.ticketing_service.presentation.dto.user.UserUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;
+import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +40,23 @@ public class UserController {
                 .data(Map.of(
                     "user", userResponseDto
                 ))
+                .build());
+    }
+
+    /**
+     * @param email
+     * @return 사용자 정보 수정
+     */
+    @PatchMapping("/{email}")
+    public ResponseEntity<SuccessResponse> updateUser(@PathVariable("email") String email,
+        @RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto) {
+        userService.updateUser(email, userUpdateRequestDto);
+
+        return ResponseEntity.ok()
+            .body(SuccessResponse.builder()
+                .title(SuccessCode.USER_UPDATE.getTitle())
+                .status(SuccessCode.USER_UPDATE.getStatus().value())
+                .detail(SuccessCode.USER_UPDATE.getDetail())
                 .build());
     }
 

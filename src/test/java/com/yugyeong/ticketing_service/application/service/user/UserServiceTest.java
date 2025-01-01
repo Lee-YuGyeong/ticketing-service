@@ -4,6 +4,7 @@ import static com.yugyeong.ticketing_service.testutil.TestConstants.ENCODED_PASS
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_EMAIL;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_PASSWORD;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_USERNAME;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,8 +21,9 @@ import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.User;
 import com.yugyeong.ticketing_service.domain.repository.UserRepository;
 import com.yugyeong.ticketing_service.infrastructure.config.security.PrincipalDetails;
-import com.yugyeong.ticketing_service.presentation.dto.user.JoinRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.user.UserJoinRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.user.UserResponseDto;
+import com.yugyeong.ticketing_service.presentation.dto.user.UserUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import java.util.Optional;
@@ -49,7 +51,7 @@ class UserServiceTest {
     @Test
     void 회원가입_성공() {
         //given
-        JoinRequestDto joinRequestDto = new JoinRequestDto(VALID_EMAIL, VALID_USERNAME,
+        UserJoinRequestDto joinRequestDto = new UserJoinRequestDto(VALID_EMAIL, VALID_USERNAME,
             VALID_PASSWORD);
 
         when(userRepository.existsByEmail(joinRequestDto.email())).thenReturn(false);
@@ -74,7 +76,7 @@ class UserServiceTest {
     @Test
     void 회원가입_실패_이메일_중복() {
         //given
-        JoinRequestDto joinRequestDto = new JoinRequestDto(VALID_EMAIL, VALID_USERNAME,
+        UserJoinRequestDto joinRequestDto = new UserJoinRequestDto(VALID_EMAIL, VALID_USERNAME,
             VALID_PASSWORD);
 
         when(userRepository.existsByEmail(joinRequestDto.email())).thenReturn(true);
@@ -157,6 +159,50 @@ class UserServiceTest {
     }
 
     @Test
+    void 사용자_수정_성공() {
+        //given
+        String newUsername = "New Username";
+        String newPassword = "New Password";
+        String encodedPassword = "New EncodedPassword";
+
+        User user = new User(VALID_EMAIL, VALID_USERNAME, ENCODED_PASSWORD, Role.USER);
+        when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(user));
+        when(bCryptPasswordEncoder.encode(newPassword)).thenReturn(encodedPassword);
+
+        UserUpdateRequestDto requestDto = new UserUpdateRequestDto(newUsername, newPassword);
+
+        //when
+        userService.updateUser(VALID_EMAIL, requestDto);
+
+        //then
+        assertThat(user.getUsername()).isEqualTo(newUsername);
+        assertThat(user.getPassword()).isEqualTo(encodedPassword);
+        verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
+        verify(bCryptPasswordEncoder, times(1)).encode(newPassword);
+    }
+
+    @Test
+    void 사용자_수정_실패_사용자_없음() {
+        //given
+        String newUsername = "New Username";
+        String newPassword = "New Password";
+        String invalidEmail = "invalid@test.com";
+
+        when(userRepository.findByEmail(invalidEmail)).thenReturn(Optional.empty());
+
+        UserUpdateRequestDto requestDto = new UserUpdateRequestDto(newUsername, newPassword);
+
+        //when
+        CustomException exception = assertThrows(CustomException.class, ()
+            -> userService.updateUser(invalidEmail, requestDto));
+
+        //then
+        assertEquals(ErrorCode.USER_NOT_FOUND.getDetail(), exception.getMessage());
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+
+    }
+
+    @Test
     void 사용자_탈퇴_성공() {
         //given
         User user = new User(VALID_EMAIL, VALID_USERNAME, VALID_PASSWORD, Role.USER);
@@ -200,4 +246,6 @@ class UserServiceTest {
         assertEquals(ErrorCode.USER_ALREADY_DEACTIVATE, exception.getErrorCode());
         verify(userRepository, never()).save(any());
     }
+
+
 }

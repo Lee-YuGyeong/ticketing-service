@@ -1,11 +1,10 @@
 package com.yugyeong.ticketing_service.infrastructure.persistence.auditor;
 
-import com.yugyeong.ticketing_service.domain.entity.User;
+import com.yugyeong.ticketing_service.infrastructure.config.security.PrincipalDetails;
 import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public class AuditorAwareImpl implements AuditorAware<String> {
 
@@ -20,13 +19,8 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
         Object principal = authentication.getPrincipal();
 
-        if (principal instanceof UserDetails) {
-            // UserDetails 인스턴스로 캐스팅
-            UserDetails userDetails = (UserDetails) principal;
-            if (userDetails instanceof User) {
-                // 실제 User 객체를 얻을 수 있다면 그 이메일을 반환
-                return Optional.of(((User) userDetails).getEmail());
-            }
+        if (principal instanceof PrincipalDetails) {
+            return Optional.of(((PrincipalDetails) principal).getUser().getEmail());
         }
 
         return Optional.empty(); // 유효하지 않은 principal인 경우
