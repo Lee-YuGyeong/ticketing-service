@@ -31,8 +31,8 @@ public class UserController {
      * @return 사용자 정보 조회
      */
     @Operation(
-        summary = "사용자 목록 조회", // 간단한 설명
-        description = "등록된 모든 사용자의 목록을 반환합니다.", // 상세 설명
+        summary = "사용자 조회",
+        description = "사용자의 정보를 반환합니다.",
         responses = {
             @ApiResponse(responseCode = "200", description = "사용자 목록 조회 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
@@ -57,6 +57,14 @@ public class UserController {
      * @param email
      * @return 사용자 정보 수정
      */
+    @Operation(
+        summary = "사용자 수정",
+        description = "사용자의 정보를 수정합니다.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "사용자 수정 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        }
+    )
     @PatchMapping("/{email}")
     public ResponseEntity<SuccessResponse> updateUser(@PathVariable("email") String email,
         @RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto) {
@@ -74,6 +82,14 @@ public class UserController {
      * @param email
      * @return 사용자 탈퇴
      */
+    @Operation(
+        summary = "사용자 탈퇴",
+        description = "사용자 탈퇴 처리를 합니다.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "사용자 탈퇴 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        }
+    )
     @DeleteMapping("/{email}")
     public ResponseEntity<SuccessResponse> deactivateUser(@PathVariable("email") String email) {
         userService.deactivateUser(email);

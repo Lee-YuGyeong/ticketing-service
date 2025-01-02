@@ -89,8 +89,8 @@ public class SwaggerConfig {
             // 엔드포인트 정의
             Operation loginOperation = new Operation()
                 .addTagsItem("auth-controller") // auth-controller 태그 추가
-                .summary("기본 로그인 API")
-                .description("스프링 시큐리티 기본 로그인 엔드포인트")
+                .summary("사용자 로그인")
+                .description("사용자 로그인을 진행합니다.")
                 .requestBody(requestBody)
                 .responses(new ApiResponses()
                     .addApiResponse("200", response200)
