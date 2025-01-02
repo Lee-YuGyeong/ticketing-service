@@ -1,8 +1,10 @@
 package com.yugyeong.ticketing_service.infrastructure.config.swagger;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
@@ -17,6 +19,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+            .info(new Info()
+                .title("티켓팅 서비스 API")
+                .version("1.0")
+                .description("이 API는 티켓팅 서비스를 제공하며, 사용자 인증 및 티켓 예약, 관리 등의 기능을 제공합니다."));
+    }
 
     @Bean
     public OpenApiCustomizer customizeJwtAuthorization() {
