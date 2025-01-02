@@ -56,6 +56,11 @@ public class SecurityConfig {
                 new JwtAuthorizationFilter(authenticationManager, userRepository, jwtProperties),
                 UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
+                ).permitAll()
                 .requestMatchers("/user/**").authenticated()
                 .requestMatchers("/manager/**").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")

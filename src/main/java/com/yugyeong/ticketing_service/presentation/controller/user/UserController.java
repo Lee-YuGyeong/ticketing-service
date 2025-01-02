@@ -5,6 +5,8 @@ import com.yugyeong.ticketing_service.presentation.dto.user.UserResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.user.UserUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,14 @@ public class UserController {
      * @param email
      * @return 사용자 정보 조회
      */
+    @Operation(
+        summary = "사용자 목록 조회", // 간단한 설명
+        description = "등록된 모든 사용자의 목록을 반환합니다.", // 상세 설명
+        responses = {
+            @ApiResponse(responseCode = "200", description = "사용자 목록 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        }
+    )
     @GetMapping("/{email}")
     public ResponseEntity<SuccessResponse> getUserByEmail(@PathVariable("email") String email) {
         UserResponseDto userResponseDto = userService.getUserByEmail(email);

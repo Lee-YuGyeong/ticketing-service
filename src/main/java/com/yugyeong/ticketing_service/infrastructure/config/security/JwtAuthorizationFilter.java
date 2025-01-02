@@ -42,7 +42,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String uri = request.getRequestURI();
 
         // 로그인, 회원가입 요청은 필터를 거치지 않도록 설정
-        if (uri.startsWith("/auth/")) {
+        if (uri.startsWith("/auth/") ||
+            uri.startsWith("/v3/api-docs") ||
+            uri.startsWith("/swagger-ui")) {
             chain.doFilter(request, response);
             return;
         }
