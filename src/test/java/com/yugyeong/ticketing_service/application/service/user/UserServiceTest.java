@@ -1,6 +1,7 @@
 package com.yugyeong.ticketing_service.application.service.user;
 
 import static com.yugyeong.ticketing_service.testutil.TestConstants.ENCODED_PASSWORD;
+import static com.yugyeong.ticketing_service.testutil.TestConstants.ROLE_USER;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_EMAIL;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_PASSWORD;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_USERNAME;
@@ -52,7 +53,7 @@ class UserServiceTest {
     void 회원가입_성공() {
         //given
         UserJoinRequestDto joinRequestDto = new UserJoinRequestDto(VALID_EMAIL, VALID_USERNAME,
-            VALID_PASSWORD);
+            VALID_PASSWORD, ROLE_USER);
 
         when(userRepository.existsByEmail(joinRequestDto.email())).thenReturn(false);
         when(bCryptPasswordEncoder.encode(joinRequestDto.password())).thenReturn(ENCODED_PASSWORD);
@@ -77,7 +78,7 @@ class UserServiceTest {
     void 회원가입_실패_이메일_중복() {
         //given
         UserJoinRequestDto joinRequestDto = new UserJoinRequestDto(VALID_EMAIL, VALID_USERNAME,
-            VALID_PASSWORD);
+            VALID_PASSWORD, ROLE_USER);
 
         when(userRepository.existsByEmail(joinRequestDto.email())).thenReturn(true);
 

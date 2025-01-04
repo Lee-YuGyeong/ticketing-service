@@ -1,6 +1,5 @@
 package com.yugyeong.ticketing_service.application.service.user;
 
-import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.User;
 import com.yugyeong.ticketing_service.domain.repository.UserRepository;
 import com.yugyeong.ticketing_service.presentation.dto.user.UserJoinRequestDto;
@@ -28,7 +27,7 @@ public class UserService {
         }
 
         User user = new User(joinRequestDto.email(), joinRequestDto.username(),
-            bCryptPasswordEncoder.encode(joinRequestDto.password()), Role.USER);
+            bCryptPasswordEncoder.encode(joinRequestDto.password()), joinRequestDto.role());
 
         userRepository.save(user);
     }

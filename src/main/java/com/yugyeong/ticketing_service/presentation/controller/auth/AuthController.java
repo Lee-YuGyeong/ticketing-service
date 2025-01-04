@@ -32,7 +32,7 @@ public class AuthController {
     )
     @PostMapping("/join")
     public ResponseEntity<SuccessResponse> join(
-        @Valid @RequestBody final UserJoinRequestDto joinRequestDto) {
+        @RequestBody @Valid final UserJoinRequestDto joinRequestDto) {
 
         userService.join(joinRequestDto);
 

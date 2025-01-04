@@ -1,5 +1,6 @@
 package com.yugyeong.ticketing_service.presentation.controller.auth;
 
+import static com.yugyeong.ticketing_service.testutil.TestConstants.ROLE_USER;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_EMAIL;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_PASSWORD;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_USERNAME;
@@ -47,7 +48,7 @@ class AuthControllerTest {
     void 회원가입_성공() throws Exception {
         //given
         UserJoinRequestDto joinRequestDto = new UserJoinRequestDto(VALID_EMAIL, VALID_USERNAME,
-            VALID_PASSWORD);
+            VALID_PASSWORD, ROLE_USER);
         doNothing().when(userService).join(any(UserJoinRequestDto.class));
 
         //when & then
@@ -66,7 +67,7 @@ class AuthControllerTest {
     void 회원가입_실패_이메일_중복() throws Exception {
         //given
         UserJoinRequestDto joinRequestDto = new UserJoinRequestDto(VALID_EMAIL, VALID_USERNAME,
-            VALID_PASSWORD);
+            VALID_PASSWORD, ROLE_USER);
 
         doThrow(new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS)).when(userService).join(any(
             UserJoinRequestDto.class));
