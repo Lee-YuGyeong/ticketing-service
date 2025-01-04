@@ -1,5 +1,6 @@
 package com.yugyeong.ticketing_service.application.service.performance;
 
+import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
@@ -56,6 +57,7 @@ public class PerformanceService {
             .dateTime(performanceCreateRequestDto.dateTime())
             .price(performanceCreateRequestDto.price())
             .description(performanceCreateRequestDto.description())
+            .status(PerformanceStatus.ACTIVE)
             .build();
 
         performanceRepository.save(performance);
@@ -73,5 +75,44 @@ public class PerformanceService {
             performanceUpdateRequestDto.price()
         );
 
+    }
+
+    /**
+     * 공연 삭제
+     *
+     * @param id
+     */
+    public void deletePerformance(Long id) {
+        Performance performance = performanceRepository.findById(id)
+            .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
+
+        performance.delete();
+        performanceRepository.save(performance);
+    }
+
+    /**
+     * 공연 취소
+     *
+     * @param id
+     */
+    public void cancelPerformance(Long id) {
+        Performance performance = performanceRepository.findById(id)
+            .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
+
+        performance.cancel();
+        performanceRepository.save(performance);
+    }
+
+    /**
+     * 공연 만료
+     *
+     * @param id
+     */
+    public void expirePerformance(Long id) {
+        Performance performance = performanceRepository.findById(id)
+            .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
+
+        performance.expire();
+        performanceRepository.save(performance);
     }
 }

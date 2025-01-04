@@ -12,8 +12,10 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,7 +91,7 @@ public class PerformanceController {
     PerformanceCreateRequestDto performanceCreateRequestDto) {
         performanceService.createPerformance(performanceCreateRequestDto);
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.CREATED)
             .body(SuccessResponse.builder()
                 .title(SuccessCode.PERFORMANCE_CREATE.getTitle())
                 .status(SuccessCode.PERFORMANCE_CREATE.getStatus().value())
@@ -111,4 +113,42 @@ public class PerformanceController {
                 .build());
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<SuccessResponse> deletePerformance(@PathVariable("id") Long id) {
+        performanceService.deletePerformance(id);
+
+        return ResponseEntity.ok()
+            .body(SuccessResponse.builder()
+                .title(SuccessCode.PERFORMANCE_DELETE.getTitle())
+                .status(SuccessCode.PERFORMANCE_DELETE.getStatus().value())
+                .detail(SuccessCode.PERFORMANCE_DELETE.getDetail())
+                .build());
+    }
+
+    @PatchMapping("/{id}/cancel")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<SuccessResponse> cancelPerformance(@PathVariable("id") Long id) {
+        performanceService.cancelPerformance(id);
+
+        return ResponseEntity.ok()
+            .body(SuccessResponse.builder()
+                .title(SuccessCode.PERFORMANCE_CANCEL.getTitle())
+                .status(SuccessCode.PERFORMANCE_CANCEL.getStatus().value())
+                .detail(SuccessCode.PERFORMANCE_CANCEL.getDetail())
+                .build());
+    }
+
+    @PatchMapping("/{id}/expire")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<SuccessResponse> expirePerformance(@PathVariable("id") Long id) {
+        performanceService.expirePerformance(id);
+
+        return ResponseEntity.ok()
+            .body(SuccessResponse.builder()
+                .title(SuccessCode.PERFORMANCE_EXPIRE.getTitle())
+                .status(SuccessCode.PERFORMANCE_EXPIRE.getStatus().value())
+                .detail(SuccessCode.PERFORMANCE_EXPIRE.getDetail())
+                .build());
+    }
 }
