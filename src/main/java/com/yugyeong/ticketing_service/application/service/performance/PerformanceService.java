@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PerformanceService {
 
-    private PerformanceRepository performanceRepository;
+    private final PerformanceRepository performanceRepository;
 
     @Transactional(readOnly = true)
     public List<PerformanceResponseDto> getAllPerformances() {
@@ -66,11 +66,11 @@ public class PerformanceService {
         Performance performance = performanceRepository.findById(id)
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
-        performance.updatePerformance(performance.getName(),
-            performance.getVenue(),
-            performance.getDateTime(),
-            performance.getDescription(),
-            performance.getPrice()
+        performance.updatePerformance(performanceUpdateRequestDto.name(),
+            performanceUpdateRequestDto.venue(),
+            performanceUpdateRequestDto.dateTime(),
+            performanceUpdateRequestDto.description(),
+            performanceUpdateRequestDto.price()
         );
 
     }

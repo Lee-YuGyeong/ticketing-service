@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Performance {
+public class Performance extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,23 +39,22 @@ public class Performance {
         this.price = price;
     }
 
+    /**
+     * 공연장 업데이트 메소드
+     *
+     * @param name
+     * @param venue
+     * @param dateTime
+     * @param description
+     * @param price
+     */
     public void updatePerformance(String name, String venue, LocalDateTime dateTime,
         String description, Double price) {
-        if (name != null && !name.isEmpty()) {
-            this.name = name;
-        }
-        if (venue != null && !venue.isEmpty()) {
-            this.venue = venue;
-        }
-        if (dateTime != null) {
-            this.dateTime = dateTime;
-        }
-        if (description != null && !description.isEmpty()) {
-            this.description = description;
-        }
-        if (price != null) {
-            this.price = price;
-        }
+        this.name = name;
+        this.venue = venue;
+        this.dateTime = dateTime;
+        this.description = description;
+        this.price = price;
     }
 
 }

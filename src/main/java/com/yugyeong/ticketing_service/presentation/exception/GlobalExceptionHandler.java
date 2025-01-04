@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -101,6 +102,27 @@ public class GlobalExceptionHandler {
             .build();
 
         return new ResponseEntity<>(errorResponse, setProblemJsonHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * AccessDeniedException 을 처리하는 핸들러
+     *
+     * @param e       AccessDeniedException
+     * @param request HttpServletRequest
+     * @return ResponseEntity<ErrorResponse>
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e,
+        HttpServletRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+            .type(URI.create("/errors/forbidden"))
+            .title("FORBIDDEN")
+            .status(HttpStatus.FORBIDDEN.value())
+            .detail("이 작업을 수행할 권한이 없습니다.")
+            .instance(URI.create(request.getRequestURI()))
+            .build();
+
+        return new ResponseEntity<>(errorResponse, setProblemJsonHeaders(), HttpStatus.FORBIDDEN);
     }
 
 
