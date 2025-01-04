@@ -60,6 +60,7 @@ public class User extends BaseEntity {
         if (!this.status) {
             throw new CustomException(ErrorCode.USER_ALREADY_DEACTIVATE);
         }
+
         this.status = false;
     }
 
