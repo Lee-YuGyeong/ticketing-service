@@ -84,7 +84,7 @@ public class PerformanceController {
         }
     )
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<SuccessResponse> createPerformance(@RequestBody @Valid
     PerformanceCreateRequestDto performanceCreateRequestDto) {
         performanceService.createPerformance(performanceCreateRequestDto);
@@ -98,7 +98,7 @@ public class PerformanceController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<SuccessResponse> updatePerformance(@PathVariable("id") Long id,
         @RequestBody @Valid PerformanceUpdateRequestDto performanceUpdateRequestDto) {
         performanceService.updatePerformance(id, performanceUpdateRequestDto);
