@@ -32,7 +32,7 @@ public class PerformanceController {
     private final PerformanceService performanceService;
 
     @Operation(
-        summary = "공연장 조회",
+        summary = "공연장 목록 조회",
         description = "공연장 목록 정보를 반환합니다.",
         responses = {
             @ApiResponse(responseCode = "200", description = "공연장 목록 조회 성공"),

@@ -59,6 +59,10 @@ public class Performance extends BaseEntity {
      */
     public void updatePerformance(String name, String venue, LocalDateTime dateTime,
         String description, Double price) {
+        if (status.equals(PerformanceStatus.DELETE)) {
+            throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
+        }
+        
         this.name = name;
         this.venue = venue;
         this.dateTime = dateTime;
@@ -80,6 +84,9 @@ public class Performance extends BaseEntity {
      * 공연 취소 메소드
      */
     public void cancel() {
+        if (status.equals(PerformanceStatus.DELETE)) {
+            throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
+        }
         if (status.equals(PerformanceStatus.CANCEL)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_CANCELLED);
         }
@@ -90,6 +97,9 @@ public class Performance extends BaseEntity {
      * 공연 만료 메소드
      */
     public void expire() {
+        if (status.equals(PerformanceStatus.DELETE)) {
+            throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
+        }
         if (status.equals(PerformanceStatus.EXPIRE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_EXPIRED);
         }

@@ -1,5 +1,6 @@
 package com.yugyeong.ticketing_service.presentation.dto.performance;
 
+import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,4 +14,5 @@ public class PerformanceResponseDto {
     private LocalDateTime dateTime; // 공연 일시
     private String description; // 공연 설명
     private Double price; // 가격
+    private PerformanceStatus status; //공연 상태
 }

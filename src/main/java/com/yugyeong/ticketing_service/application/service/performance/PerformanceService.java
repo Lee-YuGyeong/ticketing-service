@@ -11,6 +11,9 @@ import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +26,19 @@ public class PerformanceService {
 
     @Transactional(readOnly = true)
     public List<PerformanceResponseDto> getAllPerformances() {
-        List<Performance> performances = performanceRepository.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdmin = authentication.getAuthorities()
+            .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        List<Performance> performances = null;
+
+        //관리자만 삭제된 공연 조회 가능
+        if (isAdmin) {
+            performances = performanceRepository.findAll();
+        } else {
+            performances = performanceRepository.findByStatusNot(PerformanceStatus.DELETE);
+        }
 
         return performances.stream()
             .map(performance -> PerformanceResponseDto.builder()
@@ -32,14 +47,29 @@ public class PerformanceService {
                 .dateTime(performance.getDateTime())
                 .description(performance.getDescription())
                 .price(performance.getPrice())
+                .status(performance.getStatus())
                 .build())
             .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public PerformanceResponseDto getPerformance(Long id) {
-        Performance performance = performanceRepository.findById(id)
-            .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdmin = authentication.getAuthorities()
+            .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        Performance performance = null;
+
+        //관리자만 삭제된 공연 조회 가능
+        if (isAdmin) {
+            performance = performanceRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
+        } else {
+            performance = (Performance) performanceRepository.findByIdAndStatusNot(id,
+                    PerformanceStatus.DELETE)
+                .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
+        }
 
         return PerformanceResponseDto.builder()
             .name(performance.getName())
@@ -47,6 +77,7 @@ public class PerformanceService {
             .dateTime(performance.getDateTime())
             .description(performance.getDescription())
             .price(performance.getPrice())
+            .status(performance.getStatus())
             .build();
     }
 
