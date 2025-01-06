@@ -24,6 +24,11 @@ public class PerformanceService {
 
     private final PerformanceRepository performanceRepository;
 
+    /**
+     * 전체 공연 목록 조회
+     *
+     * @return
+     */
     @Transactional(readOnly = true)
     public List<PerformanceResponseDto> getAllPerformances() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,6 +57,12 @@ public class PerformanceService {
             .collect(Collectors.toList());
     }
 
+    /**
+     * 공연 정보 조회
+     *
+     * @param id
+     * @return
+     */
     @Transactional(readOnly = true)
     public PerformanceResponseDto getPerformance(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -81,6 +92,11 @@ public class PerformanceService {
             .build();
     }
 
+    /**
+     * 공연 생성
+     *
+     * @param performanceCreateRequestDto
+     */
     public void createPerformance(PerformanceCreateRequestDto performanceCreateRequestDto) {
         Performance performance = Performance.builder()
             .name(performanceCreateRequestDto.name())
@@ -94,6 +110,12 @@ public class PerformanceService {
         performanceRepository.save(performance);
     }
 
+    /**
+     * 공연 수정
+     *
+     * @param id
+     * @param performanceUpdateRequestDto
+     */
     public void updatePerformance(Long id,
         PerformanceUpdateRequestDto performanceUpdateRequestDto) {
         Performance performance = performanceRepository.findById(id)

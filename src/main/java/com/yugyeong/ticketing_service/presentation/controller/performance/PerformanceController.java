@@ -4,10 +4,15 @@ import com.yugyeong.ticketing_service.application.service.performance.Performanc
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
+import com.yugyeong.ticketing_service.presentation.response.error.ErrorResponse;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +36,27 @@ public class PerformanceController {
 
     private final PerformanceService performanceService;
 
+
     @Operation(
         summary = "공연장 목록 조회",
-        description = "공연장 목록 정보를 반환합니다.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "공연장 목록 조회 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청")
-        }
+        description = "공연장 목록 정보를 반환합니다."
+    )
+    @ApiResponses(
+        {@ApiResponse(
+            responseCode = "200",
+            description = "JWT 발급 성공",
+            content = @Content(
+                examples = @ExampleObject(value = "{\"title\":\"JWT 발급 성공\",\"status\":200,\"detail\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJHUkVFTk5FVCIsImlhdCI6MTcyMzA5NDE2MywiZXhwIjoxNzIzMDk3NzYzfQ.3tVkL-8OJsjOncA3IRxisX_ZFbyI1L-WQsxbHmgMLFlUab2b1Ppv6ViMfet60phrHPF-mpDJiOaI8EvzVxiAXQ\"}"),
+                schema = @Schema(implementation = SuccessResponse.class)
+            )
+        ), @ApiResponse(
+            responseCode = "401",
+            description = "아이디 또는 비밀번호 불일치",
+            content = @Content(
+                examples = @ExampleObject(value = "{\"type\":\"/errors/authentication\",\"title\":\"AUTH NOT VALID\",\"status\":401,\"detail\":\"아이디 또는 비밀번호가 일치하지 않습니다.\",\"instance\":\"/auth\"}"),
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )}
     )
     @GetMapping("/performances")
     public ResponseEntity<SuccessResponse> getAllPerformances() {
