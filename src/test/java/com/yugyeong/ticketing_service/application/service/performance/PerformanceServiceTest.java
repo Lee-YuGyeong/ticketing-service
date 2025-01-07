@@ -158,9 +158,13 @@ class PerformanceServiceTest {
     @Test
     void 공연_등록_성공() {
         //given
-        PerformanceCreateRequestDto performanceCreateRequestDto = new PerformanceCreateRequestDto(
-            "Performance 1", "Venue 1",
-            LocalDateTime.now(), "Description 1", 1000.0);
+        PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
+            .name("Performance 1")
+            .venue("Venue 1")
+            .dateTime(LocalDateTime.now())
+            .description("A wonderful performance")
+            .price(1000.0)
+            .build();
 
         //when
         performanceService.createPerformance(performanceCreateRequestDto);
@@ -171,7 +175,7 @@ class PerformanceServiceTest {
                 assertAll("Performance",
                     () -> assertEquals("Performance 1", performance.getName()),
                     () -> assertEquals("Venue 1", performance.getVenue()),
-                    () -> assertEquals("Description 1", performance.getDescription()),
+                    () -> assertEquals("A wonderful performance", performance.getDescription()),
                     () -> assertEquals(1000.0, performance.getPrice())
                 );
                 return true;

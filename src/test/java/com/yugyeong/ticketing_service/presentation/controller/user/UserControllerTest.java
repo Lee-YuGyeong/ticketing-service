@@ -88,7 +88,7 @@ class UserControllerTest {
         //when & then
         mockMvc.perform(patch("/user/" + VALID_EMAIL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(requestDto)) // JSON 데이터 전달
+                .content(new ObjectMapper().writeValueAsString(requestDto))
                 .with(csrf()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.title").value(SuccessCode.USER_UPDATE.getTitle()))

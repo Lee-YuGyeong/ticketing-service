@@ -36,7 +36,7 @@ dependencies {
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
-
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
 }
 

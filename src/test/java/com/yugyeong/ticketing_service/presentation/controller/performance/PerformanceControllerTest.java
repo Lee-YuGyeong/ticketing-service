@@ -1,18 +1,31 @@
 package com.yugyeong.ticketing_service.presentation.controller.performance;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yugyeong.ticketing_service.application.service.performance.PerformanceService;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
+import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
+import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -84,22 +97,110 @@ class PerformanceControllerTest {
     }
 
     @Test
-    void createPerformance() {
+    @WithMockUser(roles = "ADMIN")
+    void 공연_등록_성공() throws Exception {
+        // given
+        PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
+            .name("Performance 1")
+            .venue("Venue 1")
+            .dateTime(LocalDateTime.now())
+            .description("A wonderful performance")
+            .price(1000.0)
+            .build();
+
+        doNothing().when(performanceService)
+            .createPerformance(any(PerformanceCreateRequestDto.class));
+
+        // when & then
+        mockMvc.perform(post("/performance")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(performanceCreateRequestDto))
+                .with(csrf()))
+            .andExpect(status().isCreated())
+            .andExpect(
+                jsonPath("$.status").value(SuccessCode.PERFORMANCE_CREATE.getStatus().value()))
+            .andExpect(jsonPath("$.title").value(SuccessCode.PERFORMANCE_CREATE.getTitle()))
+            .andExpect(jsonPath("$.detail").value(SuccessCode.PERFORMANCE_CREATE.getDetail()));
+
+        verify(performanceService, times(1)).createPerformance(
+            any(PerformanceCreateRequestDto.class));
+    }
+
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void 공연_수정_성공() throws Exception {
+        // given
+        PerformanceUpdateRequestDto updateRequestDto = PerformanceUpdateRequestDto.builder()
+            .name("Performance 2")
+            .venue("Venue 2")
+            .dateTime(LocalDateTime.now())
+            .description("A wonderful performance")
+            .price(2000.0)
+            .build();
+
+        doNothing().when(performanceService).updatePerformance(1L, updateRequestDto);
+
+        // when & then
+        mockMvc.perform(patch("/performance/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updateRequestDto))
+                .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(
+                jsonPath("$.status").value(SuccessCode.PERFORMANCE_UPDATE.getStatus().value()))
+            .andExpect(jsonPath("$.title").value(SuccessCode.PERFORMANCE_UPDATE.getTitle()))
+            .andExpect(jsonPath("$.detail").value(SuccessCode.PERFORMANCE_UPDATE.getDetail()));
+
     }
 
     @Test
-    void updatePerformance() {
+    @WithMockUser(roles = "ADMIN")
+    void 공연_삭제_성공() throws Exception {
+        //given
+        doNothing().when(performanceService).deletePerformance(1L);
+
+        //when & then
+        mockMvc.perform(delete("/performance/1").
+                with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value(SuccessCode.PERFORMANCE_DELETE.getTitle()))
+            .andExpect(
+                jsonPath("$.status").value(SuccessCode.PERFORMANCE_DELETE.getStatus().value()))
+            .andExpect(jsonPath("$.detail").value(SuccessCode.PERFORMANCE_DELETE.getDetail()));
+
     }
 
     @Test
-    void deletePerformance() {
+    @WithMockUser(roles = "ADMIN")
+    void 공연_취소_성공() throws Exception {
+        //given
+        doNothing().when(performanceService).cancelPerformance(1L);
+
+        //when & then
+        mockMvc.perform(patch("/performance/1/cancel").
+                with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value(SuccessCode.PERFORMANCE_CANCEL.getTitle()))
+            .andExpect(
+                jsonPath("$.status").value(SuccessCode.PERFORMANCE_CANCEL.getStatus().value()))
+            .andExpect(jsonPath("$.detail").value(SuccessCode.PERFORMANCE_CANCEL.getDetail()));
+
     }
 
     @Test
-    void cancelPerformance() {
-    }
+    @WithMockUser(roles = "ADMIN")
+    void 공연_만료_성공() throws Exception {
+        //given
+        doNothing().when(performanceService).expirePerformance(1L);
 
-    @Test
-    void expirePerformance() {
+        //when & then
+        mockMvc.perform(patch("/performance/1/expire")
+                .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value(SuccessCode.PERFORMANCE_EXPIRE.getTitle()))
+            .andExpect(
+                jsonPath("$.status").value(SuccessCode.PERFORMANCE_EXPIRE.getStatus().value()))
+            .andExpect(jsonPath("$.detail").value(SuccessCode.PERFORMANCE_EXPIRE.getDetail()));
     }
 }

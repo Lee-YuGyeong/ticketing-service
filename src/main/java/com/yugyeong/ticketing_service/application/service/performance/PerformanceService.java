@@ -99,11 +99,11 @@ public class PerformanceService {
      */
     public void createPerformance(PerformanceCreateRequestDto performanceCreateRequestDto) {
         Performance performance = Performance.builder()
-            .name(performanceCreateRequestDto.name())
-            .venue(performanceCreateRequestDto.venue())
-            .dateTime(performanceCreateRequestDto.dateTime())
-            .price(performanceCreateRequestDto.price())
-            .description(performanceCreateRequestDto.description())
+            .name(performanceCreateRequestDto.getName())
+            .venue(performanceCreateRequestDto.getVenue())
+            .dateTime(performanceCreateRequestDto.getDateTime())
+            .price(performanceCreateRequestDto.getPrice())
+            .description(performanceCreateRequestDto.getDescription())
             .status(PerformanceStatus.ACTIVE)
             .build();
 
@@ -121,11 +121,11 @@ public class PerformanceService {
         Performance performance = performanceRepository.findById(id)
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
-        performance.updatePerformance(performanceUpdateRequestDto.name(),
-            performanceUpdateRequestDto.venue(),
-            performanceUpdateRequestDto.dateTime(),
-            performanceUpdateRequestDto.description(),
-            performanceUpdateRequestDto.price()
+        performance.updatePerformance(performanceUpdateRequestDto.getName(),
+            performanceUpdateRequestDto.getVenue(),
+            performanceUpdateRequestDto.getDateTime(),
+            performanceUpdateRequestDto.getDescription(),
+            performanceUpdateRequestDto.getPrice()
         );
 
     }
