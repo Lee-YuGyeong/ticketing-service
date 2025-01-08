@@ -20,25 +20,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PerformanceCreateRequestDto {
 
-    @Schema(description = "공연 이름")
+    @Schema(description = "공연 이름", example = "테스트 콘서트 이름")
     @NotNull(message = "이름은 필수 값 입니다.")
-    String name;
+    private String name;
 
-    @Schema(description = "공연 장소")
+    @Schema(description = "공연 장소", example = "테스트 공연 장소")
     @NotNull(message = "장소는 필수 값 입니다.")
-    String venue;
+    private String venue;
 
-    @Schema(description = "공연 시간")
+    @Schema(description = "공연 시간", example = "2025-01-10T20:00:00", type = "string")
     @NotNull(message = "시간은 필수 값 입니다.")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    LocalDateTime dateTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime dateTime;
 
-    @Schema(description = "설명")
-    String description;
+    @Schema(description = "설명", example = "테스트 공연 입니다.")
+    private String description;
 
-    @Schema(description = "가격")
+    @Schema(description = "가격", example = "1000.0")
     @NotNull(message = "가격은 필수 값 입니다.")
-    @Min(value = 0, message = "가격은 0 이상이여야 합니다.") Double price;
+    @Min(value = 0, message = "가격은 0 이상이여야 합니다.")
+    private Double price;
+
 }

@@ -5,7 +5,10 @@ import com.yugyeong.ticketing_service.presentation.dto.user.UserJoinRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,12 +27,13 @@ public class AuthController {
 
     @Operation(
         summary = "사용자 회원가입",
-        description = "사용자 회원가입을 진행합니다.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "사용자 회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청")
-        }
+        description = "사용자 회원가입을 진행합니다."
     )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "사용자 회원가입 성공",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SuccessResponse.class)))
+    })
     @PostMapping("/join")
     public ResponseEntity<SuccessResponse> join(
         @RequestBody @Valid final UserJoinRequestDto joinRequestDto) {

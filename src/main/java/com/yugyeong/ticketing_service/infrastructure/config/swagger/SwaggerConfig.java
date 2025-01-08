@@ -58,8 +58,8 @@ public class SwaggerConfig {
         return openApi -> {
             // 로그인 요청 스키마 정의
             Schema<?> loginRequestSchema = new Schema<>()
-                .addProperty("email", new Schema<>().type("string").example("user@example.com"))
-                .addProperty("password", new Schema<>().type("string").example("password123"));
+                .addProperty("email", new Schema<>().type("string").example("test@naver.com"))
+                .addProperty("password", new Schema<>().type("string").example("test123456789"));
 
             // 로그인 성공 응답 정의 (SuccessResponse)
             ApiResponse response200 = new ApiResponse()

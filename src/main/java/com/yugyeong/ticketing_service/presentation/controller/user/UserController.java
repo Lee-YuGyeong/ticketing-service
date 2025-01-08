@@ -6,7 +6,10 @@ import com.yugyeong.ticketing_service.presentation.dto.user.UserUpdateRequestDto
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +35,13 @@ public class UserController {
      */
     @Operation(
         summary = "사용자 조회",
-        description = "사용자의 정보를 반환합니다.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "사용자 목록 조회 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청")
-        }
+        description = "사용자의 정보를 반환합니다."
     )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "사용자 목록 조회 성공",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SuccessResponse.class)))
+    })
     @GetMapping("/{email}")
     public ResponseEntity<SuccessResponse> getUserByEmail(@PathVariable("email") String email) {
         UserResponseDto userResponseDto = userService.getUserByEmail(email);
@@ -59,12 +63,13 @@ public class UserController {
      */
     @Operation(
         summary = "사용자 수정",
-        description = "사용자의 정보를 수정합니다.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "사용자 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청")
-        }
+        description = "사용자의 정보를 수정합니다."
     )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "사용자 수정 성공",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SuccessResponse.class)))
+    })
     @PatchMapping("/{email}")
     public ResponseEntity<SuccessResponse> updateUser(@PathVariable("email") String email,
         @RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto) {
@@ -84,12 +89,13 @@ public class UserController {
      */
     @Operation(
         summary = "사용자 탈퇴",
-        description = "사용자 탈퇴 처리를 합니다.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "사용자 탈퇴 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청")
-        }
+        description = "사용자 탈퇴 처리를 합니다."
     )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "사용자 탈퇴 성공",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SuccessResponse.class)))
+    })
     @DeleteMapping("/{email}")
     public ResponseEntity<SuccessResponse> deactivateUser(@PathVariable("email") String email) {
         userService.deactivateUser(email);
