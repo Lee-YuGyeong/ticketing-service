@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
+import com.yugyeong.ticketing_service.domain.entity.Seat;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
@@ -63,10 +64,23 @@ class PerformanceServiceTest {
         doReturn(grantedAuthorities).when(authentication).getAuthorities();
 
         List<Performance> mockPerformances = List.of(
-            new Performance("Performance 1", "Venue 1", LocalDateTime.now(), "Description 1",
-                1000.0, PerformanceStatus.ACTIVE),
-            new Performance("Performance 2", "Venue 2", LocalDateTime.now().plusDays(1),
-                "Description 2", 1500.0, PerformanceStatus.DELETE)
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build(),
+
+            Performance.builder()
+                .name("Performance 2")
+                .venue("Venue 2")
+                .dateTime(LocalDateTime.now().plusDays(1))
+                .description("Description 2")
+                .price(1500.0)
+                .status(PerformanceStatus.DELETE)
+                .build()
         );
 
         when(performanceRepository.findAll()).thenReturn(mockPerformances);
@@ -92,8 +106,14 @@ class PerformanceServiceTest {
         doReturn(grantedAuthorities).when(authentication).getAuthorities();
 
         List<Performance> mockPerformances = List.of(
-            new Performance("Performance 1", "Venue 1", LocalDateTime.now(), "Description 1",
-                1000.0, PerformanceStatus.ACTIVE)
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build()
         );
 
         when(performanceRepository.findByStatusNot(PerformanceStatus.DELETE)).thenReturn(
@@ -118,8 +138,16 @@ class PerformanceServiceTest {
             new SimpleGrantedAuthority("ROLE_" + Role.ADMIN));
         doReturn(grantedAuthorities).when(authentication).getAuthorities();
 
-        Performance mockPerformances = new Performance("Performance 1", "Venue 1",
-            LocalDateTime.now(), "Description 1", 1000.0, PerformanceStatus.DELETE);
+        Performance mockPerformances =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.DELETE)
+                .build();
+
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(mockPerformances));
 
         // when
@@ -141,8 +169,16 @@ class PerformanceServiceTest {
             new SimpleGrantedAuthority("ROLE_" + Role.USER));
         doReturn(grantedAuthorities).when(authentication).getAuthorities();
 
-        Performance mockPerformances = new Performance("Performance 1", "Venue 1",
-            LocalDateTime.now(), "Description 1", 1000.0, PerformanceStatus.ACTIVE);
+        Performance mockPerformances =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build();
+
         when(performanceRepository.findByIdAndStatusNot(1L, PerformanceStatus.DELETE)).thenReturn(
             Optional.of(mockPerformances));
 
@@ -190,12 +226,29 @@ class PerformanceServiceTest {
         String newDescription = "New Description";
         Double newPrice = 2000.0;
 
-        Performance performance = new Performance("Performance 1", "Venue 1", LocalDateTime.now(),
-            "Description 1", 1000.0, PerformanceStatus.ACTIVE);
+        Performance performance =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build();
+
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
-        PerformanceUpdateRequestDto performanceUpdateRequestDto = new PerformanceUpdateRequestDto(
-            newName, newVenue, LocalDateTime.now(), newDescription, newPrice);
+        Seat seat1 = new Seat("S", 1000.0, 50);
+        Seat seat2 = new Seat("A", 500.0, 100);
+
+        PerformanceUpdateRequestDto performanceUpdateRequestDto = PerformanceUpdateRequestDto.builder()
+            .name(newName)
+            .venue(newVenue)
+            .dateTime(LocalDateTime.now())
+            .description(newDescription)
+            .price(newPrice)
+            .seatList(List.of(seat1, seat2))
+            .build();
 
         //when
         performanceService.updatePerformance(1L, performanceUpdateRequestDto);
@@ -218,8 +271,17 @@ class PerformanceServiceTest {
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.empty());
 
-        PerformanceUpdateRequestDto performanceUpdateRequestDto = new PerformanceUpdateRequestDto(
-            newName, newVenue, LocalDateTime.now(), newDescription, newPrice);
+        Seat seat1 = new Seat("S", 1000.0, 50);
+        Seat seat2 = new Seat("A", 500.0, 100);
+
+        PerformanceUpdateRequestDto performanceUpdateRequestDto = PerformanceUpdateRequestDto.builder()
+            .name(newName)
+            .venue(newVenue)
+            .dateTime(LocalDateTime.now())
+            .description(newDescription)
+            .price(newPrice)
+            .seatList(List.of(seat1, seat2))
+            .build();
 
         //when
         CustomException exception = assertThrows(CustomException.class,
@@ -233,8 +295,16 @@ class PerformanceServiceTest {
     @Test
     void 공연_삭제_성공() {
         //given
-        Performance performance = new Performance("Performance 1", "Venue 1", LocalDateTime.now(),
-            "Description 1", 1000.0, PerformanceStatus.ACTIVE);
+        Performance performance =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build();
+
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
         //when
@@ -262,8 +332,16 @@ class PerformanceServiceTest {
     @Test
     void 공연_삭제_실패_이미_삭제됨() {
         //given
-        Performance performance = new Performance("Performance 1", "Venue 1", LocalDateTime.now(),
-            "Description 1", 1000.0, PerformanceStatus.ACTIVE);
+        Performance performance =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build();
+
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
         performance.delete();
 
@@ -279,8 +357,16 @@ class PerformanceServiceTest {
     @Test
     void 공연_취소_성공() {
         //given
-        Performance performance = new Performance("Performance 1", "Venue 1", LocalDateTime.now(),
-            "Description 1", 1000.0, PerformanceStatus.ACTIVE);
+        Performance performance =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build();
+
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
         //when
@@ -308,8 +394,16 @@ class PerformanceServiceTest {
     @Test
     void 공연_취소_실패_이미_취소됨() {
         //given
-        Performance performance = new Performance("Performance 1", "Venue 1", LocalDateTime.now(),
-            "Description 1", 1000.0, PerformanceStatus.ACTIVE);
+        Performance performance =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build();
+
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
         performance.cancel();
 
@@ -325,8 +419,16 @@ class PerformanceServiceTest {
     @Test
     void 공연_만료_성공() {
         //given
-        Performance performance = new Performance("Performance 1", "Venue 1", LocalDateTime.now(),
-            "Description 1", 1000.0, PerformanceStatus.ACTIVE);
+        Performance performance =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build();
+
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
         //when
@@ -354,8 +456,16 @@ class PerformanceServiceTest {
     @Test
     void 공연_만료_실패_이미_취소됨() {
         //given
-        Performance performance = new Performance("Performance 1", "Venue 1", LocalDateTime.now(),
-            "Description 1", 1000.0, PerformanceStatus.ACTIVE);
+        Performance performance =
+            Performance.builder()
+                .name("Performance 1")
+                .venue("Venue 1")
+                .dateTime(LocalDateTime.now())
+                .description("Description 1")
+                .price(1000.0)
+                .status(PerformanceStatus.ACTIVE)
+                .build();
+
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
         performance.expire();
 

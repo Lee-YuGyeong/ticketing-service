@@ -45,13 +45,14 @@ public class Performance extends BaseEntity {
 
     @Builder
     public Performance(String name, String venue, LocalDateTime dateTime,
-        String description, Double price, PerformanceStatus status) {
+        String description, Double price, PerformanceStatus status, List<Seat> seatList) {
         this.name = name;
         this.venue = venue;
         this.dateTime = dateTime;
         this.description = description;
         this.price = price;
         this.status = status;
+        this.seatList = seatList;
     }
 
     /**
@@ -64,7 +65,7 @@ public class Performance extends BaseEntity {
      * @param price
      */
     public void updatePerformance(String name, String venue, LocalDateTime dateTime,
-        String description, Double price) {
+        String description, Double price, List<Seat> seatList) {
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
         }
@@ -74,6 +75,7 @@ public class Performance extends BaseEntity {
         this.dateTime = dateTime;
         this.description = description;
         this.price = price;
+        this.seatList = seatList;
     }
 
     /**

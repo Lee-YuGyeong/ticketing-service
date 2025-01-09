@@ -105,6 +105,7 @@ public class PerformanceService {
             .price(performanceCreateRequestDto.getPrice())
             .description(performanceCreateRequestDto.getDescription())
             .status(PerformanceStatus.ACTIVE)
+            .seatList(performanceCreateRequestDto.getSeatList())
             .build();
 
         performanceRepository.save(performance);
@@ -125,7 +126,8 @@ public class PerformanceService {
             performanceUpdateRequestDto.getVenue(),
             performanceUpdateRequestDto.getDateTime(),
             performanceUpdateRequestDto.getDescription(),
-            performanceUpdateRequestDto.getPrice()
+            performanceUpdateRequestDto.getPrice(),
+            performanceUpdateRequestDto.getSeatList()
         );
 
     }
