@@ -9,7 +9,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +40,9 @@ public class Performance extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PerformanceStatus status;
 
+    @OneToMany
+    private List<Seat> seatList = new ArrayList<>();
+
     @Builder
     public Performance(String name, String venue, LocalDateTime dateTime,
         String description, Double price, PerformanceStatus status) {
@@ -62,7 +68,7 @@ public class Performance extends BaseEntity {
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
         }
-        
+
         this.name = name;
         this.venue = venue;
         this.dateTime = dateTime;
