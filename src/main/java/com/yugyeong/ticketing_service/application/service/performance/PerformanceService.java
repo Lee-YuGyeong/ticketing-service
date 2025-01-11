@@ -2,12 +2,17 @@ package com.yugyeong.ticketing_service.application.service.performance;
 
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
+import com.yugyeong.ticketing_service.domain.entity.Seat;
+import com.yugyeong.ticketing_service.domain.entity.Ticket;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
+import com.yugyeong.ticketing_service.domain.repository.TicketRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.SeatCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerformanceService {
 
     private final PerformanceRepository performanceRepository;
+    private final TicketRepository ticketRepository;
 
     /**
      * 전체 공연 목록 조회
@@ -51,7 +57,6 @@ public class PerformanceService {
                 .venue(performance.getVenue())
                 .dateTime(performance.getDateTime())
                 .description(performance.getDescription())
-                .price(performance.getPrice())
                 .status(performance.getStatus())
                 .build())
             .collect(Collectors.toList());
@@ -87,7 +92,6 @@ public class PerformanceService {
             .venue(performance.getVenue())
             .dateTime(performance.getDateTime())
             .description(performance.getDescription())
-            .price(performance.getPrice())
             .status(performance.getStatus())
             .build();
     }
@@ -98,17 +102,45 @@ public class PerformanceService {
      * @param performanceCreateRequestDto
      */
     public void createPerformance(PerformanceCreateRequestDto performanceCreateRequestDto) {
+        List<Seat> seatList = new ArrayList<>();
+
+        for (SeatCreateRequestDto seatCreateRequestDto : performanceCreateRequestDto.getSeatList()) {
+            Seat seat = Seat.builder()
+                .count(seatCreateRequestDto.getCount())
+                .grade(seatCreateRequestDto.getGrade())
+                .price(seatCreateRequestDto.getPrice())
+                .build();
+            seatList.add(seat);
+        }
+
         Performance performance = Performance.builder()
             .name(performanceCreateRequestDto.getName())
             .venue(performanceCreateRequestDto.getVenue())
             .dateTime(performanceCreateRequestDto.getDateTime())
-            .price(performanceCreateRequestDto.getPrice())
             .description(performanceCreateRequestDto.getDescription())
             .status(PerformanceStatus.ACTIVE)
-            .seatList(performanceCreateRequestDto.getSeatList())
+            .seatList(seatList)
             .build();
 
+        int index = 1;
+        List<Ticket> tickets = new ArrayList<>();
+        for (Seat seat : seatList) {
+            for (int i = index; i <= seat.getCount(); i++) {
+                Ticket ticket = Ticket.builder()
+                    .seatNumber(i)
+                    .isReserved(false)
+                    .seat(seat)
+                    .build();
+                tickets.add(ticket);
+            }
+            index = index + seat.getCount();
+        }
+
+        ticketRepository.saveAll(tickets);
+
         performanceRepository.save(performance);
+
+
     }
 
     /**
@@ -126,7 +158,6 @@ public class PerformanceService {
             performanceUpdateRequestDto.getVenue(),
             performanceUpdateRequestDto.getDateTime(),
             performanceUpdateRequestDto.getDescription(),
-            performanceUpdateRequestDto.getPrice(),
             performanceUpdateRequestDto.getSeatList()
         );
 

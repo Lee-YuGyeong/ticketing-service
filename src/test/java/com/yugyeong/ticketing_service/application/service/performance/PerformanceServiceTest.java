@@ -17,9 +17,11 @@ import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
 import com.yugyeong.ticketing_service.domain.entity.Seat;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
+import com.yugyeong.ticketing_service.domain.repository.TicketRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.SeatCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import java.time.LocalDateTime;
@@ -42,6 +44,9 @@ class PerformanceServiceTest {
 
     @Mock
     private PerformanceRepository performanceRepository;
+
+    @Mock
+    private TicketRepository ticketRepository;
 
     @InjectMocks
     private PerformanceService performanceService;
@@ -69,7 +74,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build(),
 
@@ -78,7 +82,6 @@ class PerformanceServiceTest {
                 .venue("Venue 2")
                 .dateTime(LocalDateTime.now().plusDays(1))
                 .description("Description 2")
-                .price(1500.0)
                 .status(PerformanceStatus.DELETE)
                 .build()
         );
@@ -111,7 +114,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build()
         );
@@ -144,7 +146,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.DELETE)
                 .build();
 
@@ -175,7 +176,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 
@@ -194,12 +194,23 @@ class PerformanceServiceTest {
     @Test
     void 공연_등록_성공() {
         //given
+        SeatCreateRequestDto seatCreateRequestDto1 = SeatCreateRequestDto.builder()
+            .grade("S")
+            .price(10000.0)
+            .count(50)
+            .build();
+        SeatCreateRequestDto seatCreateRequestDto2 = SeatCreateRequestDto.builder()
+            .grade("A")
+            .price(9000.0)
+            .count(100)
+            .build();
+
         PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
             .name("Performance 1")
             .venue("Venue 1")
             .dateTime(LocalDateTime.now())
             .description("A wonderful performance")
-            .price(1000.0)
+            .seatList(List.of(seatCreateRequestDto1, seatCreateRequestDto2))
             .build();
 
         //when
@@ -211,8 +222,7 @@ class PerformanceServiceTest {
                 assertAll("Performance",
                     () -> assertEquals("Performance 1", performance.getName()),
                     () -> assertEquals("Venue 1", performance.getVenue()),
-                    () -> assertEquals("A wonderful performance", performance.getDescription()),
-                    () -> assertEquals(1000.0, performance.getPrice())
+                    () -> assertEquals("A wonderful performance", performance.getDescription())
                 );
                 return true;
             }));
@@ -232,7 +242,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 
@@ -257,7 +266,6 @@ class PerformanceServiceTest {
         assertThat(performance.getName()).isEqualTo(newName);
         assertThat(performance.getVenue()).isEqualTo(newVenue);
         assertThat(performance.getDescription()).isEqualTo(newDescription);
-        assertThat(performance.getPrice()).isEqualTo(newPrice);
         verify(performanceRepository, times(1)).findById(1L);
     }
 
@@ -301,7 +309,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 
@@ -338,7 +345,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 
@@ -363,7 +369,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 
@@ -400,7 +405,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 
@@ -425,7 +429,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 
@@ -462,7 +465,6 @@ class PerformanceServiceTest {
                 .venue("Venue 1")
                 .dateTime(LocalDateTime.now())
                 .description("Description 1")
-                .price(1000.0)
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 

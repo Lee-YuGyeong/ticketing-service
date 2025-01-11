@@ -20,6 +20,7 @@ import com.yugyeong.ticketing_service.domain.entity.Seat;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.SeatCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -101,16 +102,26 @@ class PerformanceControllerTest {
     @WithMockUser(roles = "ADMIN")
     void 공연_등록_성공() throws Exception {
         // given
-        Seat seat1 = new Seat("S", 1000.0, 50);
-        Seat seat2 = new Seat("A", 500.0, 100);
+        SeatCreateRequestDto seat1 = new SeatCreateRequestDto("S", 1000.0, 50);
+        SeatCreateRequestDto seat2 = new SeatCreateRequestDto("A", 500.0, 100);
+
+        SeatCreateRequestDto seatCreateRequestDto1 = SeatCreateRequestDto.builder()
+            .grade("S")
+            .price(10000.0)
+            .count(50)
+            .build();
+        SeatCreateRequestDto seatCreateRequestDto2 = SeatCreateRequestDto.builder()
+            .grade("A")
+            .price(9000.0)
+            .count(100)
+            .build();
 
         PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
             .name("Performance 1")
             .venue("Venue 1")
             .dateTime(LocalDateTime.now())
             .description("A wonderful performance")
-            .price(1000.0)
-            .seatList(List.of(seat1, seat2))
+            .seatList(List.of(seatCreateRequestDto1, seatCreateRequestDto2))
             .build();
 
         doNothing().when(performanceService)

@@ -3,6 +3,7 @@ package com.yugyeong.ticketing_service.domain.entity;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -35,22 +36,19 @@ public class Performance extends BaseEntity {
 
     private String description;
 
-    private Double price;
-
     @Enumerated(EnumType.STRING)
     private PerformanceStatus status;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seat> seatList = new ArrayList<>();
 
     @Builder
     public Performance(String name, String venue, LocalDateTime dateTime,
-        String description, Double price, PerformanceStatus status, List<Seat> seatList) {
+        String description, PerformanceStatus status, List<Seat> seatList) {
         this.name = name;
         this.venue = venue;
         this.dateTime = dateTime;
         this.description = description;
-        this.price = price;
         this.status = status;
         this.seatList = seatList;
     }
@@ -62,10 +60,9 @@ public class Performance extends BaseEntity {
      * @param venue
      * @param dateTime
      * @param description
-     * @param price
      */
     public void updatePerformance(String name, String venue, LocalDateTime dateTime,
-        String description, Double price, List<Seat> seatList) {
+        String description, List<Seat> seatList) {
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
         }
@@ -74,7 +71,6 @@ public class Performance extends BaseEntity {
         this.venue = venue;
         this.dateTime = dateTime;
         this.description = description;
-        this.price = price;
         this.seatList = seatList;
     }
 
