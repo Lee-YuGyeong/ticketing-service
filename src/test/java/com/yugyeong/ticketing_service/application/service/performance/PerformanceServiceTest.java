@@ -14,8 +14,8 @@ import static org.mockito.Mockito.when;
 
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.Role;
+import com.yugyeong.ticketing_service.domain.entity.Grade;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
-import com.yugyeong.ticketing_service.domain.entity.Seat;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.TicketRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
@@ -247,8 +247,8 @@ class PerformanceServiceTest {
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
-        Seat seat1 = new Seat("S", 1000.0, 50);
-        Seat seat2 = new Seat("A", 500.0, 100);
+        Grade grade1 = new Grade("S", 1000.0, 50);
+        Grade grade2 = new Grade("A", 500.0, 100);
 
         PerformanceUpdateRequestDto performanceUpdateRequestDto = PerformanceUpdateRequestDto.builder()
             .name(newName)
@@ -256,7 +256,7 @@ class PerformanceServiceTest {
             .dateTime(LocalDateTime.now())
             .description(newDescription)
             .price(newPrice)
-            .seatList(List.of(seat1, seat2))
+            .seatList(List.of(grade1, grade2))
             .build();
 
         //when
@@ -279,8 +279,8 @@ class PerformanceServiceTest {
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.empty());
 
-        Seat seat1 = new Seat("S", 1000.0, 50);
-        Seat seat2 = new Seat("A", 500.0, 100);
+        Grade grade1 = new Grade("S", 1000.0, 50);
+        Grade grade2 = new Grade("A", 500.0, 100);
 
         PerformanceUpdateRequestDto performanceUpdateRequestDto = PerformanceUpdateRequestDto.builder()
             .name(newName)
@@ -288,7 +288,7 @@ class PerformanceServiceTest {
             .dateTime(LocalDateTime.now())
             .description(newDescription)
             .price(newPrice)
-            .seatList(List.of(seat1, seat2))
+            .seatList(List.of(grade1, grade2))
             .build();
 
         //when

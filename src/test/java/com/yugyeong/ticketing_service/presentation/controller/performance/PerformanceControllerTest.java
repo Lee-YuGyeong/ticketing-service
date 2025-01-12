@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yugyeong.ticketing_service.application.service.performance.PerformanceService;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
-import com.yugyeong.ticketing_service.domain.entity.Seat;
+import com.yugyeong.ticketing_service.domain.entity.Grade;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
@@ -147,8 +147,8 @@ class PerformanceControllerTest {
     @WithMockUser(roles = "ADMIN")
     void 공연_수정_성공() throws Exception {
         // given
-        Seat seat1 = new Seat("S", 1000.0, 50);
-        Seat seat2 = new Seat("A", 500.0, 100);
+        Grade grade1 = new Grade("S", 1000.0, 50);
+        Grade grade2 = new Grade("A", 500.0, 100);
 
         PerformanceUpdateRequestDto updateRequestDto = PerformanceUpdateRequestDto.builder()
             .name("Performance 2")
@@ -156,7 +156,7 @@ class PerformanceControllerTest {
             .dateTime(LocalDateTime.now())
             .description("A wonderful performance")
             .price(2000.0)
-            .seatList(List.of(seat1, seat2))
+            .seatList(List.of(grade1, grade2))
             .build();
 
         doNothing().when(performanceService).updatePerformance(1L, updateRequestDto);

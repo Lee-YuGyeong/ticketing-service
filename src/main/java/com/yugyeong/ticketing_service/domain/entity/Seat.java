@@ -1,14 +1,14 @@
 package com.yugyeong.ticketing_service.domain.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,19 +21,15 @@ public class Seat extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String grade;
+    private int seatNumber; // 좌석 번호
 
-    private Double price;
+    private Boolean isReserved = false; // 예약 여부
 
-    private int count;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_id")
+    private Grade grade; // 좌석 등급
 
-    @OneToMany(mappedBy = "seat")
-    private List<Ticket> tickets = new ArrayList<>();
+    @OneToOne(mappedBy = "seat")
+    private Reservation reservation;
 
-    @Builder
-    public Seat(String grade, Double price, int count) {
-        this.grade = grade;
-        this.price = price;
-        this.count = count;
-    }
 }

@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.yugyeong.ticketing_service.domain.entity.Seat;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,20 +39,13 @@ public class PerformanceUpdateRequestDto {
     @Schema(description = "설명", example = "테스트 공연 입니다.")
     private String description;
 
-    @Schema(description = "가격", example = "1000.0")
-    @NotNull(message = "가격은 필수 값 입니다.")
-    @Min(value = 0, message = "가격은 0 이상이여야 합니다.")
-    private Double price;
-
-    @ArraySchema(
-        schema = @Schema(
-            description = "좌석",
-            implementation = Seat.class,
-            example = "[{\"grade\": \"S\", \"price\": 1000.0, \"count\": 50}, {\"grade\": \"A\", \"price\": 500.0, \"count\": 100}]"
-        )
+    @Schema(
+        description = "좌석",
+        implementation = SeatUpdateRequestDto.class,
+        example = "[{\"grade\": \"S\", \"price\": 11000.0, \"count\": 10}, {\"grade\": \"A\", \"price\": 90000.0, \"count\": 100}]"
     )
     @NotNull(message = "좌석은 필수 값 입니다.")
-    private List<Seat> seatList;
+    private List<@Valid SeatUpdateRequestDto> seatList;
 
 
 }

@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,24 +16,29 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Ticket extends BaseEntity {
+public class Reservation extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int seatNumber;
+    private Double price;
 
-    private Boolean isReserved = false;
+    private ReservationStatus reservationStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Ticket(int seatNumber, Boolean isReserved, Seat seat) {
-        this.seatNumber = seatNumber;
-        this.isReserved = isReserved;
+    public Reservation(Double price, ReservationStatus reservationStatus, Seat seat, User user) {
+        this.price = price;
+        this.reservationStatus = reservationStatus;
         this.seat = seat;
+        this.user = user;
     }
 }

@@ -32,7 +32,9 @@ public class Performance extends BaseEntity {
 
     private String venue;
 
-    private LocalDateTime dateTime;
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
 
     private String description;
 
@@ -40,17 +42,22 @@ public class Performance extends BaseEntity {
     private PerformanceStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Seat> seatList = new ArrayList<>();
+    private List<Grade> gradeList = new ArrayList<>(); // 좌석 등급
+
+
+    private int remainCount; // 남은 좌석 개수
 
     @Builder
-    public Performance(String name, String venue, LocalDateTime dateTime,
-        String description, PerformanceStatus status, List<Seat> seatList) {
+    public Performance(String name, String venue, LocalDateTime startDate, LocalDateTime endDate,
+        String description, PerformanceStatus status, List<Grade> gradeList, int remainCount) {
         this.name = name;
         this.venue = venue;
-        this.dateTime = dateTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.description = description;
         this.status = status;
-        this.seatList = seatList;
+        this.gradeList = gradeList;
+        this.remainCount = remainCount;
     }
 
     /**
@@ -62,7 +69,7 @@ public class Performance extends BaseEntity {
      * @param description
      */
     public void updatePerformance(String name, String venue, LocalDateTime dateTime,
-        String description, List<Seat> seatList) {
+        String description, List<Grade> gradeList) {
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
         }
@@ -71,7 +78,7 @@ public class Performance extends BaseEntity {
         this.venue = venue;
         this.dateTime = dateTime;
         this.description = description;
-        this.seatList = seatList;
+        this.gradeList = gradeList;
     }
 
     /**
