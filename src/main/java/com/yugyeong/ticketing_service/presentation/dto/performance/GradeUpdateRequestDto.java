@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SeatCreateRequestDto {
+public class GradeUpdateRequestDto {
 
     @Schema(description = "좌석 등급", example = "S")
     @NotNull(message = "좌석 등급은 필수 값 입니다.")
-    private String grade;
+    private String name;
 
     @Schema(description = "가격", example = "1000.0")
     @NotNull(message = "가격은 필수 값 입니다.")

@@ -16,11 +16,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yugyeong.ticketing_service.application.service.performance.PerformanceService;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
-import com.yugyeong.ticketing_service.domain.entity.Grade;
+import com.yugyeong.ticketing_service.presentation.dto.performance.GradeCreateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
-import com.yugyeong.ticketing_service.presentation.dto.performance.SeatCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,7 +49,8 @@ class PerformanceControllerTest {
             PerformanceResponseDto.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .price(1000.0)
                 .status(PerformanceStatus.ACTIVE).build(),
@@ -57,7 +58,8 @@ class PerformanceControllerTest {
             PerformanceResponseDto.builder()
                 .name("Performance 2")
                 .venue("Venue 2")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 2")
                 .price(1000.0)
                 .status(PerformanceStatus.DELETE).build()
@@ -80,7 +82,8 @@ class PerformanceControllerTest {
         PerformanceResponseDto mockPerformances = PerformanceResponseDto.builder()
             .name("Performance 1")
             .venue("Venue 1")
-            .dateTime(LocalDateTime.now())
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
             .description("Description 1")
             .price(1000.0)
             .status(PerformanceStatus.ACTIVE).build();
@@ -102,16 +105,16 @@ class PerformanceControllerTest {
     @WithMockUser(roles = "ADMIN")
     void 공연_등록_성공() throws Exception {
         // given
-        SeatCreateRequestDto seat1 = new SeatCreateRequestDto("S", 1000.0, 50);
-        SeatCreateRequestDto seat2 = new SeatCreateRequestDto("A", 500.0, 100);
+        GradeCreateRequestDto seat1 = new GradeCreateRequestDto("S", 1000.0, 50);
+        GradeCreateRequestDto seat2 = new GradeCreateRequestDto("A", 500.0, 100);
 
-        SeatCreateRequestDto seatCreateRequestDto1 = SeatCreateRequestDto.builder()
-            .grade("S")
+        GradeCreateRequestDto gradeCreateRequestDto1 = GradeCreateRequestDto.builder()
+            .name("S")
             .price(10000.0)
             .count(50)
             .build();
-        SeatCreateRequestDto seatCreateRequestDto2 = SeatCreateRequestDto.builder()
-            .grade("A")
+        GradeCreateRequestDto gradeCreateRequestDto2 = GradeCreateRequestDto.builder()
+            .name("A")
             .price(9000.0)
             .count(100)
             .build();
@@ -119,9 +122,10 @@ class PerformanceControllerTest {
         PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
             .name("Performance 1")
             .venue("Venue 1")
-            .dateTime(LocalDateTime.now())
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
             .description("A wonderful performance")
-            .seatList(List.of(seatCreateRequestDto1, seatCreateRequestDto2))
+            .gradeList(List.of(gradeCreateRequestDto1, gradeCreateRequestDto2))
             .build();
 
         doNothing().when(performanceService)
@@ -147,16 +151,24 @@ class PerformanceControllerTest {
     @WithMockUser(roles = "ADMIN")
     void 공연_수정_성공() throws Exception {
         // given
-        Grade grade1 = new Grade("S", 1000.0, 50);
-        Grade grade2 = new Grade("A", 500.0, 100);
+        GradeUpdateRequestDto dto1 = GradeUpdateRequestDto.builder()
+            .name("S")
+            .price(10000.0)
+            .count(50)
+            .build();
+        GradeUpdateRequestDto dto2 = GradeUpdateRequestDto.builder()
+            .name("A")
+            .price(9000.0)
+            .count(100)
+            .build();
 
         PerformanceUpdateRequestDto updateRequestDto = PerformanceUpdateRequestDto.builder()
             .name("Performance 2")
             .venue("Venue 2")
-            .dateTime(LocalDateTime.now())
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
             .description("A wonderful performance")
-            .price(2000.0)
-            .seatList(List.of(grade1, grade2))
+            .gradeList(List.of(dto1, dto2))
             .build();
 
         doNothing().when(performanceService).updatePerformance(1L, updateRequestDto);

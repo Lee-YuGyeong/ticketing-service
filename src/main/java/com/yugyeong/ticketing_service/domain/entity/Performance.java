@@ -38,14 +38,14 @@ public class Performance extends BaseEntity {
 
     private String description;
 
+    private int remainCount; // 남은 좌석 개수
+
     @Enumerated(EnumType.STRING)
     private PerformanceStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> gradeList = new ArrayList<>(); // 좌석 등급
 
-
-    private int remainCount; // 남은 좌석 개수
 
     @Builder
     public Performance(String name, String venue, LocalDateTime startDate, LocalDateTime endDate,
@@ -60,15 +60,19 @@ public class Performance extends BaseEntity {
         this.remainCount = remainCount;
     }
 
+
     /**
      * 공연장 업데이트 메소드
      *
      * @param name
      * @param venue
-     * @param dateTime
+     * @param startDate
+     * @param endDate
      * @param description
+     * @param gradeList
      */
-    public void updatePerformance(String name, String venue, LocalDateTime dateTime,
+    public void updatePerformance(String name, String venue, LocalDateTime startDate,
+        LocalDateTime endDate,
         String description, List<Grade> gradeList) {
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
@@ -76,7 +80,8 @@ public class Performance extends BaseEntity {
 
         this.name = name;
         this.venue = venue;
-        this.dateTime = dateTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.description = description;
         this.gradeList = gradeList;
     }

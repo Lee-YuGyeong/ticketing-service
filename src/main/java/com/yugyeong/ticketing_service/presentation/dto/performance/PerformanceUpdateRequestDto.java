@@ -29,23 +29,30 @@ public class PerformanceUpdateRequestDto {
     @NotNull(message = "장소는 필수 값 입니다.")
     private String venue;
 
-    @Schema(description = "공연 시간", example = "2025-01-10T20:00:00", type = "string")
-    @NotNull(message = "시간은 필수 값 입니다.")
+    @Schema(description = "공연 시작 시간", example = "2025-01-10T20:00:00", type = "string")
+    @NotNull(message = "시작 시간은 필수 값 입니다.")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime dateTime;
+    private LocalDateTime startDate;
+
+    @Schema(description = "공연 종료 시간", example = "2025-01-17T20:00:00", type = "string")
+    @NotNull(message = "종료 시간은 필수 값 입니다.")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime endDate;
 
     @Schema(description = "설명", example = "테스트 공연 입니다.")
     private String description;
 
     @Schema(
         description = "좌석",
-        implementation = SeatUpdateRequestDto.class,
+        implementation = GradeUpdateRequestDto.class,
         example = "[{\"grade\": \"S\", \"price\": 11000.0, \"count\": 10}, {\"grade\": \"A\", \"price\": 90000.0, \"count\": 100}]"
     )
     @NotNull(message = "좌석은 필수 값 입니다.")
-    private List<@Valid SeatUpdateRequestDto> seatList;
+    private List<@Valid GradeUpdateRequestDto> gradeList;
 
 
 }

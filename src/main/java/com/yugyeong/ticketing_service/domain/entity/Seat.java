@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,7 @@ public class Seat extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int seatNumber; // 좌석 번호
+    private int number; // 좌석 번호
 
     private Boolean isReserved = false; // 예약 여부
 
@@ -32,4 +33,11 @@ public class Seat extends BaseEntity {
     @OneToOne(mappedBy = "seat")
     private Reservation reservation;
 
+    @Builder
+    public Seat(int number, Boolean isReserved, Grade grade, Reservation reservation) {
+        this.number = number;
+        this.isReserved = isReserved;
+        this.grade = grade;
+        this.reservation = reservation;
+    }
 }

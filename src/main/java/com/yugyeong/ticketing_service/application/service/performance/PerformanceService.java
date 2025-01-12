@@ -3,13 +3,14 @@ package com.yugyeong.ticketing_service.application.service.performance;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.entity.Grade;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
-import com.yugyeong.ticketing_service.domain.entity.Reservation;
+import com.yugyeong.ticketing_service.domain.entity.Seat;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
-import com.yugyeong.ticketing_service.domain.repository.TicketRepository;
+import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
+import com.yugyeong.ticketing_service.presentation.dto.performance.GradeCreateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
-import com.yugyeong.ticketing_service.presentation.dto.performance.SeatCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerformanceService {
 
     private final PerformanceRepository performanceRepository;
-    private final TicketRepository ticketRepository;
+    private final SeatRepository seatRepository;
 
     /**
      * 전체 공연 목록 조회
@@ -55,7 +56,8 @@ public class PerformanceService {
             .map(performance -> PerformanceResponseDto.builder()
                 .name(performance.getName())
                 .venue(performance.getVenue())
-                .dateTime(performance.getDateTime())
+                .startDate(performance.getStartDate())
+                .endDate(performance.getEndDate())
                 .description(performance.getDescription())
                 .status(performance.getStatus())
                 .build())
@@ -90,7 +92,8 @@ public class PerformanceService {
         return PerformanceResponseDto.builder()
             .name(performance.getName())
             .venue(performance.getVenue())
-            .dateTime(performance.getDateTime())
+            .startDate(performance.getStartDate())
+            .endDate(performance.getEndDate())
             .description(performance.getDescription())
             .status(performance.getStatus())
             .build();
@@ -104,11 +107,11 @@ public class PerformanceService {
     public void createPerformance(PerformanceCreateRequestDto performanceCreateRequestDto) {
         List<Grade> gradeList = new ArrayList<>();
 
-        for (SeatCreateRequestDto seatCreateRequestDto : performanceCreateRequestDto.getSeatList()) {
+        for (GradeCreateRequestDto gradeCreateRequestDto : performanceCreateRequestDto.getGradeList()) {
             Grade grade = Grade.builder()
-                .count(seatCreateRequestDto.getCount())
-                .grade(seatCreateRequestDto.getGrade())
-                .price(seatCreateRequestDto.getPrice())
+                .count(gradeCreateRequestDto.getCount())
+                .name(gradeCreateRequestDto.getName())
+                .price(gradeCreateRequestDto.getPrice())
                 .build();
             gradeList.add(grade);
         }
@@ -116,27 +119,28 @@ public class PerformanceService {
         Performance performance = Performance.builder()
             .name(performanceCreateRequestDto.getName())
             .venue(performanceCreateRequestDto.getVenue())
-            .dateTime(performanceCreateRequestDto.getDateTime())
+            .startDate(performanceCreateRequestDto.getStartDate())
+            .endDate(performanceCreateRequestDto.getEndDate())
             .description(performanceCreateRequestDto.getDescription())
             .status(PerformanceStatus.ACTIVE)
-            .seatList(gradeList)
+            .gradeList(gradeList)
             .build();
 
         int index = 1;
-        List<Reservation> reservations = new ArrayList<>();
+        List<Seat> seats = new ArrayList<>();
         for (Grade grade : gradeList) {
             for (int i = index; i <= grade.getCount(); i++) {
-                Reservation reservation = Reservation.builder()
-                    .seatNumber(i)
+                Seat seat = Seat.builder()
+                    .number(i)
                     .isReserved(false)
-                    .seat(grade)
+                    .grade(grade)
                     .build();
-                reservations.add(reservation);
+                seats.add(seat);
             }
             index = index + grade.getCount();
         }
 
-        ticketRepository.saveAll(reservations);
+        seatRepository.saveAll(seats);
 
         performanceRepository.save(performance);
 
@@ -157,11 +161,23 @@ public class PerformanceService {
         // 이미 예약된 좌석이 있으면 공연 수정 불가
         //performance.getSeatList()
 
+        List<Grade> gradeList = new ArrayList<>();
+        for (GradeUpdateRequestDto dto : performanceUpdateRequestDto.getGradeList()) {
+            Grade grade = Grade.builder()
+                .name(dto.getName())
+                .price(dto.getPrice())
+                .count(dto.getCount())
+                .build();
+
+            gradeList.add(grade);
+        }
+
         performance.updatePerformance(performanceUpdateRequestDto.getName(),
             performanceUpdateRequestDto.getVenue(),
-            performanceUpdateRequestDto.getDateTime(),
+            performanceUpdateRequestDto.getStartDate(),
+            performanceUpdateRequestDto.getEndDate(),
             performanceUpdateRequestDto.getDescription(),
-            performanceUpdateRequestDto.getSeatList()
+            gradeList
         );
 
     }

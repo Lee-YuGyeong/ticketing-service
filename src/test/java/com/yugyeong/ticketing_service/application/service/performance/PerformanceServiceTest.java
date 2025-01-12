@@ -14,14 +14,14 @@ import static org.mockito.Mockito.when;
 
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.Role;
-import com.yugyeong.ticketing_service.domain.entity.Grade;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
-import com.yugyeong.ticketing_service.domain.repository.TicketRepository;
+import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
+import com.yugyeong.ticketing_service.presentation.dto.performance.GradeCreateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
-import com.yugyeong.ticketing_service.presentation.dto.performance.SeatCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import java.time.LocalDateTime;
@@ -46,7 +46,7 @@ class PerformanceServiceTest {
     private PerformanceRepository performanceRepository;
 
     @Mock
-    private TicketRepository ticketRepository;
+    private SeatRepository seatRepository;
 
     @InjectMocks
     private PerformanceService performanceService;
@@ -72,7 +72,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build(),
@@ -80,7 +81,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 2")
                 .venue("Venue 2")
-                .dateTime(LocalDateTime.now().plusDays(1))
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 2")
                 .status(PerformanceStatus.DELETE)
                 .build()
@@ -112,7 +114,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build()
@@ -144,7 +147,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.DELETE)
                 .build();
@@ -174,7 +178,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build();
@@ -194,13 +199,13 @@ class PerformanceServiceTest {
     @Test
     void 공연_등록_성공() {
         //given
-        SeatCreateRequestDto seatCreateRequestDto1 = SeatCreateRequestDto.builder()
-            .grade("S")
+        GradeCreateRequestDto gradeCreateRequestDto1 = GradeCreateRequestDto.builder()
+            .name("S")
             .price(10000.0)
             .count(50)
             .build();
-        SeatCreateRequestDto seatCreateRequestDto2 = SeatCreateRequestDto.builder()
-            .grade("A")
+        GradeCreateRequestDto gradeCreateRequestDto2 = GradeCreateRequestDto.builder()
+            .name("A")
             .price(9000.0)
             .count(100)
             .build();
@@ -208,9 +213,10 @@ class PerformanceServiceTest {
         PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
             .name("Performance 1")
             .venue("Venue 1")
-            .dateTime(LocalDateTime.now())
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
             .description("A wonderful performance")
-            .seatList(List.of(seatCreateRequestDto1, seatCreateRequestDto2))
+            .gradeList(List.of(gradeCreateRequestDto1, gradeCreateRequestDto2))
             .build();
 
         //when
@@ -240,23 +246,32 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
-        Grade grade1 = new Grade("S", 1000.0, 50);
-        Grade grade2 = new Grade("A", 500.0, 100);
+        GradeUpdateRequestDto dto1 = GradeUpdateRequestDto.builder()
+            .name("S")
+            .price(10000.0)
+            .count(50)
+            .build();
+        GradeUpdateRequestDto dto2 = GradeUpdateRequestDto.builder()
+            .name("A")
+            .price(9000.0)
+            .count(100)
+            .build();
 
         PerformanceUpdateRequestDto performanceUpdateRequestDto = PerformanceUpdateRequestDto.builder()
             .name(newName)
             .venue(newVenue)
-            .dateTime(LocalDateTime.now())
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
             .description(newDescription)
-            .price(newPrice)
-            .seatList(List.of(grade1, grade2))
+            .gradeList(List.of(dto1, dto2))
             .build();
 
         //when
@@ -279,16 +294,24 @@ class PerformanceServiceTest {
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.empty());
 
-        Grade grade1 = new Grade("S", 1000.0, 50);
-        Grade grade2 = new Grade("A", 500.0, 100);
+        GradeUpdateRequestDto dto1 = GradeUpdateRequestDto.builder()
+            .name("S")
+            .price(10000.0)
+            .count(50)
+            .build();
+        GradeUpdateRequestDto dto2 = GradeUpdateRequestDto.builder()
+            .name("A")
+            .price(9000.0)
+            .count(100)
+            .build();
 
         PerformanceUpdateRequestDto performanceUpdateRequestDto = PerformanceUpdateRequestDto.builder()
             .name(newName)
             .venue(newVenue)
-            .dateTime(LocalDateTime.now())
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
             .description(newDescription)
-            .price(newPrice)
-            .seatList(List.of(grade1, grade2))
+            .gradeList(List.of(dto1, dto2))
             .build();
 
         //when
@@ -307,7 +330,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build();
@@ -343,7 +367,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build();
@@ -367,7 +392,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build();
@@ -403,7 +429,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build();
@@ -427,7 +454,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build();
@@ -463,7 +491,8 @@ class PerformanceServiceTest {
             Performance.builder()
                 .name("Performance 1")
                 .venue("Venue 1")
-                .dateTime(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now())
                 .description("Description 1")
                 .status(PerformanceStatus.ACTIVE)
                 .build();
