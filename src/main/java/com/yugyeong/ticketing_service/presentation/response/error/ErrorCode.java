@@ -24,15 +24,20 @@ public enum ErrorCode {
         HttpStatus.NOT_FOUND,
         "공연장이 존재하지 않습니다."),
     PERFORMANCE_ALREADY_DELETED("/errors/performance-already-deleted",
-        "USER ALREADY DELETED",
+        "PERFORMANCE ALREADY DELETED",
         HttpStatus.CONFLICT,
         "이미 삭제된 공연장입니다."),
-    PERFORMANCE_ALREADY_CANCELLED("/errors/performance-already-cancelled", "USER ALREADY CANCELLED",
+    PERFORMANCE_ALREADY_CANCELLED("/errors/performance-already-cancelled",
+        "PERFORMANCE ALREADY CANCELLED",
         HttpStatus.CONFLICT,
         "이미 공연이 취소되었습니다."),
-    PERFORMANCE_ALREADY_EXPIRED("/errors/performance-already-expired", "USER ALREADY EXPIRED",
+    PERFORMANCE_ALREADY_EXPIRED("/errors/performance-already-expired",
+        "PERFORMANCE ALREADY EXPIRED",
         HttpStatus.CONFLICT,
-        "이미 공연이 만료되었습니다.");
+        "이미 공연이 만료되었습니다."),
+    SEAT_ALREADY_RESERVED("/errors/seat-already-reserved", "SEAT ALREADY RESERVED",
+        HttpStatus.CONFLICT,
+        "좌석이 이미 예매되었습니다.");
 
 
     private final String type;

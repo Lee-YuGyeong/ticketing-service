@@ -30,14 +30,20 @@ public class Seat extends BaseEntity {
     @JoinColumn(name = "grade_id")
     private Grade grade; // 좌석 등급
 
-    @OneToOne(mappedBy = "seat")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performance_id")
+    private Performance performance;
+
+    @OneToOne(mappedBy = "seat", fetch = FetchType.LAZY)
     private Reservation reservation;
 
     @Builder
-    public Seat(int number, Boolean isReserved, Grade grade, Reservation reservation) {
+    public Seat(int number, Boolean isReserved, Grade grade, Performance performance,
+        Reservation reservation) {
         this.number = number;
         this.isReserved = isReserved;
         this.grade = grade;
+        this.performance = performance;
         this.reservation = reservation;
     }
 }

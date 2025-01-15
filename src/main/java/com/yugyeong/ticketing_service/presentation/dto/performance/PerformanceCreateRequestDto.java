@@ -47,11 +47,7 @@ public class PerformanceCreateRequestDto {
     @Schema(description = "설명", example = "테스트 공연 입니다.")
     private String description;
 
-    @Schema(
-        description = "좌석",
-        implementation = GradeCreateRequestDto.class,
-        example = "[{\"grade\": \"S\", \"price\": 11000.0, \"count\": 10}, {\"grade\": \"A\", \"price\": 90000.0, \"count\": 100}]"
-    )
+    @Schema(description = "좌석", type = "array")
     @NotNull(message = "좌석은 필수 값 입니다.")
     private List<@Valid GradeCreateRequestDto> gradeList;
 
