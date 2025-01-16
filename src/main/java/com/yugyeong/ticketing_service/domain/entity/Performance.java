@@ -52,7 +52,7 @@ public class Performance extends BaseEntity {
 
     @Builder
     public Performance(String name, String venue, LocalDateTime startDate, LocalDateTime endDate,
-        String description, PerformanceStatus status, List<Grade> gradeList, int remainCount) {
+        String description, PerformanceStatus status, List<Grade> gradeList) {
         this.name = name;
         this.venue = venue;
         this.startDate = startDate;
@@ -60,7 +60,9 @@ public class Performance extends BaseEntity {
         this.description = description;
         this.status = status;
         this.gradeList = gradeList;
-        this.remainCount = remainCount;
+        for (Grade grade : gradeList) {
+            this.remainCount += grade.getCount(); // 남은 좌석 개수 초기화
+        }
     }
 
     /**
@@ -94,8 +96,9 @@ public class Performance extends BaseEntity {
 
         // 좌석 생성은 grade 설정이 완료된 후에 수행
         for (Grade grade : this.gradeList) {
-            for (int i = 0; i < grade.getCount(); i++) {
+            for (int i = 1; i <= grade.getCount(); i++) {
                 Seat seat = Seat.builder()
+                    .number(i)
                     .grade(grade)
                     .performance(this)
                     .isReserved(false)
@@ -146,5 +149,11 @@ public class Performance extends BaseEntity {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_EXPIRED);
         }
         this.status = PerformanceStatus.EXPIRE;
+    }
+
+    // gradeList를 관리하는 메서드 추가
+    public void addGrade(Grade grade) {
+        this.gradeList.add(grade);
+        grade.changePerformance(this);
     }
 }

@@ -38,14 +38,16 @@ public class Grade extends BaseEntity {
     private List<Seat> seatList = new ArrayList<>();
 
     @Builder
-    public Grade(String name, Double price, int count, List<Seat> seatList) {
+    public Grade(String name, Double price, int count, Performance performance,
+        List<Seat> seatList) {
         this.name = name;
         this.price = price;
         this.count = count;
+        this.performance = performance;
         this.seatList = seatList;
     }
 
-    public void changePerformance(Object o) {
+    public void changePerformance(Performance performance) {
         this.performance = performance;
     }
 }

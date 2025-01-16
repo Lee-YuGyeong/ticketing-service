@@ -107,15 +107,6 @@ public class PerformanceService {
     public void createPerformance(PerformanceCreateRequestDto performanceCreateRequestDto) {
         List<Grade> gradeList = new ArrayList<>();
 
-        for (GradeCreateRequestDto gradeCreateRequestDto : performanceCreateRequestDto.getGradeList()) {
-            Grade grade = Grade.builder()
-                .count(gradeCreateRequestDto.getCount())
-                .name(gradeCreateRequestDto.getName())
-                .price(gradeCreateRequestDto.getPrice())
-                .build();
-            gradeList.add(grade);
-        }
-
         Performance performance = Performance.builder()
             .name(performanceCreateRequestDto.getName())
             .venue(performanceCreateRequestDto.getVenue())
@@ -125,6 +116,19 @@ public class PerformanceService {
             .status(PerformanceStatus.ACTIVE)
             .gradeList(gradeList)
             .build();
+
+        for (GradeCreateRequestDto gradeCreateRequestDto : performanceCreateRequestDto.getGradeList()) {
+            Grade grade = Grade.builder()
+                .count(gradeCreateRequestDto.getCount())
+                .name(gradeCreateRequestDto.getName())
+                .price(gradeCreateRequestDto.getPrice())
+                .build();
+            performance.getGradeList().add(grade);
+        }
+
+        for (Grade grade : gradeList) {
+            grade.changePerformance(performance);
+        }
 
         int index = 1;
         List<Seat> seats = new ArrayList<>();
@@ -140,11 +144,9 @@ public class PerformanceService {
             index = index + grade.getCount();
         }
 
-        seatRepository.saveAll(seats);
+        //seatRepository.saveAll(seats);
 
         performanceRepository.save(performance);
-
-
     }
 
     /**
