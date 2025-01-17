@@ -7,9 +7,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,8 +33,6 @@ public class Performance extends BaseEntity {
 
     private String name;
 
-    private String venue;
-
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
@@ -44,25 +45,29 @@ public class Performance extends BaseEntity {
     private PerformanceStatus status;
 
     @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Grade> gradeList = new ArrayList<>(); // 좌석 등급
+    private List<PerformanceGrade> performanceGradeList = new ArrayList<>(); // 좌석 등급
 
     @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Seat> seatList = new ArrayList<>();
+    private List<PerformanceSeat> performanceSeatList = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "venue_id")
+    private Venue venue;
 
     @Builder
-    public Performance(String name, String venue, LocalDateTime startDate, LocalDateTime endDate,
-        String description, PerformanceStatus status, List<Grade> gradeList) {
+    public Performance(String name, LocalDateTime startDate, LocalDateTime endDate,
+        String description, PerformanceStatus status, List<PerformanceGrade> performanceGradeList,
+        Venue venue) {
         this.name = name;
-        this.venue = venue;
         this.startDate = startDate;
         this.endDate = endDate;
         this.description = description;
         this.status = status;
-        this.gradeList = gradeList;
-        for (Grade grade : gradeList) {
-            this.remainCount += grade.getCount(); // 남은 좌석 개수 초기화
+        this.performanceGradeList = performanceGradeList;
+        for (PerformanceGrade performanceGrade : performanceGradeList) {
+            this.remainCount += performanceGrade.getTotal_seats(); // 남은 좌석 개수 초기화
         }
+        this.venue = venue;
     }
 
     /**
@@ -73,37 +78,37 @@ public class Performance extends BaseEntity {
      * @param startDate
      * @param endDate
      * @param description
-     * @param newGradeList
+     * @param newPerformanceGradeList
      */
     public void updatePerformance(String name, String venue, LocalDateTime startDate,
-        LocalDateTime endDate, String description, List<Grade> newGradeList) {
+        LocalDateTime endDate, String description, List<PerformanceGrade> newPerformanceGradeList) {
         // 삭제 된 공연장은 수정 불가능
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
         }
 
         // 먼저 연결된 좌석들을 제거 (Seat가 Grade를 참조하므로 Seat를 먼저 제거)
-        this.seatList.clear();
+        this.performanceSeatList.clear();
 
         // 기존 등급들을 모두 제거
-        this.gradeList.clear();
+        this.performanceGradeList.clear();
 
         // 새로운 등급 연관관계 설정 및 좌석 생성
-        for (Grade grade : newGradeList) {
-            grade.changePerformance(this);
-            this.gradeList.add(grade);
+        for (PerformanceGrade performanceGrade : newPerformanceGradeList) {
+            performanceGrade.changePerformance(this);
+            this.performanceGradeList.add(performanceGrade);
         }
 
         // 좌석 생성은 grade 설정이 완료된 후에 수행
-        for (Grade grade : this.gradeList) {
-            for (int i = 1; i <= grade.getCount(); i++) {
-                Seat seat = Seat.builder()
+        for (PerformanceGrade performanceGrade : this.performanceGradeList) {
+            for (int i = 1; i <= performanceGrade.getTotal_seats(); i++) {
+                PerformanceSeat performanceSeat = PerformanceSeat.builder()
                     .number(i)
-                    .grade(grade)
+                    .grade(performanceGrade)
                     .performance(this)
                     .isReserved(false)
                     .build();
-                this.seatList.add(seat);
+                this.performanceSeatList.add(performanceSeat);
             }
         }
 
@@ -112,7 +117,7 @@ public class Performance extends BaseEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.description = description;
-        this.remainCount = this.seatList.size();
+        this.remainCount = this.performanceSeatList.size();
     }
 
     /**
@@ -152,8 +157,8 @@ public class Performance extends BaseEntity {
     }
 
     // gradeList를 관리하는 메서드 추가
-    public void addGrade(Grade grade) {
-        this.gradeList.add(grade);
-        grade.changePerformance(this);
+    public void addGrade(PerformanceGrade performanceGrade) {
+        this.performanceGradeList.add(performanceGrade);
+        performanceGrade.changePerformance(this);
     }
 }

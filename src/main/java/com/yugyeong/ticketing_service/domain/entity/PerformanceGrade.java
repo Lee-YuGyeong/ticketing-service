@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Grade extends BaseEntity {
+public class PerformanceGrade extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,23 +28,23 @@ public class Grade extends BaseEntity {
 
     private Double price;
 
-    private int count; // 등급 별 총 좌석 개수
+    private int total_seats; // 등급 별 총 좌석 개수
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
     @OneToMany(mappedBy = "grade")
-    private List<Seat> seatList = new ArrayList<>();
+    private List<PerformanceSeat> performanceSeatList = new ArrayList<>();
 
     @Builder
-    public Grade(String name, Double price, int count, Performance performance,
-        List<Seat> seatList) {
+    public PerformanceGrade(String name, Double price, int total_seats, Performance performance,
+        List<PerformanceSeat> performanceSeatList) {
         this.name = name;
         this.price = price;
-        this.count = count;
+        this.total_seats = total_seats;
         this.performance = performance;
-        this.seatList = seatList;
+        this.performanceSeatList = performanceSeatList;
     }
 
     public void changePerformance(Performance performance) {

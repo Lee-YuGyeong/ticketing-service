@@ -1,5 +1,6 @@
 package com.yugyeong.ticketing_service.domain.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -7,7 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Seat extends BaseEntity {
+public class PerformanceSeat extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,22 +29,22 @@ public class Seat extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_id")
-    private Grade grade; // 좌석 등급
+    private PerformanceGrade performanceGrade; // 좌석 등급
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "performance_id")
-    private Performance performance;
+    @JoinColumn(name = "seat_base_id")
+    private SeatBase seatBase; // 좌석 등급
 
-    @OneToOne(mappedBy = "seat", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "seat", cascade = CascadeType.ALL, orphanRemoval = true)
     private Reservation reservation;
 
     @Builder
-    public Seat(int number, Boolean isReserved, Grade grade, Performance performance,
-        Reservation reservation) {
+    public PerformanceSeat(int number, Boolean isReserved, PerformanceGrade performanceGrade,
+        SeatBase seatBase, Reservation reservation) {
         this.number = number;
         this.isReserved = isReserved;
-        this.grade = grade;
-        this.performance = performance;
+        this.performanceGrade = performanceGrade;
+        this.seatBase = seatBase;
         this.reservation = reservation;
     }
 }

@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,19 +25,25 @@ public class Reservation extends BaseEntity {
 
     private ReservationStatus reservationStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performance")
+    private Performance performance;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id")
-    private Seat seat;
+    private PerformanceSeat performanceSeat;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public Reservation(Double price, ReservationStatus reservationStatus, Seat seat, User user) {
+    public Reservation(Double price, ReservationStatus reservationStatus, Performance performance,
+        PerformanceSeat performanceSeat, User user) {
         this.price = price;
         this.reservationStatus = reservationStatus;
-        this.seat = seat;
+        this.performance = performance;
+        this.performanceSeat = performanceSeat;
         this.user = user;
     }
 }

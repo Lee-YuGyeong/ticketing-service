@@ -1,9 +1,9 @@
 package com.yugyeong.ticketing_service.application.service.performance;
 
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
-import com.yugyeong.ticketing_service.domain.entity.Grade;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
-import com.yugyeong.ticketing_service.domain.entity.Seat;
+import com.yugyeong.ticketing_service.domain.entity.PerformanceGrade;
+import com.yugyeong.ticketing_service.domain.entity.PerformanceSeat;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.GradeCreateRequestDto;
@@ -105,7 +105,7 @@ public class PerformanceService {
      * @param performanceCreateRequestDto
      */
     public void createPerformance(PerformanceCreateRequestDto performanceCreateRequestDto) {
-        List<Grade> gradeList = new ArrayList<>();
+        List<PerformanceGrade> performanceGradeList = new ArrayList<>();
 
         Performance performance = Performance.builder()
             .name(performanceCreateRequestDto.getName())
@@ -114,34 +114,34 @@ public class PerformanceService {
             .endDate(performanceCreateRequestDto.getEndDate())
             .description(performanceCreateRequestDto.getDescription())
             .status(PerformanceStatus.ACTIVE)
-            .gradeList(gradeList)
+            .gradeList(performanceGradeList)
             .build();
 
         for (GradeCreateRequestDto gradeCreateRequestDto : performanceCreateRequestDto.getGradeList()) {
-            Grade grade = Grade.builder()
+            PerformanceGrade performanceGrade = PerformanceGrade.builder()
                 .count(gradeCreateRequestDto.getCount())
                 .name(gradeCreateRequestDto.getName())
                 .price(gradeCreateRequestDto.getPrice())
                 .build();
-            performance.getGradeList().add(grade);
+            performance.getPerformanceGradeList().add(performanceGrade);
         }
 
-        for (Grade grade : gradeList) {
-            grade.changePerformance(performance);
+        for (PerformanceGrade performanceGrade : performanceGradeList) {
+            performanceGrade.changePerformance(performance);
         }
 
         int index = 1;
-        List<Seat> seats = new ArrayList<>();
-        for (Grade grade : gradeList) {
-            for (int i = index; i <= grade.getCount(); i++) {
-                Seat seat = Seat.builder()
+        List<PerformanceSeat> performanceSeats = new ArrayList<>();
+        for (PerformanceGrade performanceGrade : performanceGradeList) {
+            for (int i = index; i <= performanceGrade.getTotal_seats(); i++) {
+                PerformanceSeat performanceSeat = PerformanceSeat.builder()
                     .number(i)
                     .isReserved(false)
-                    .grade(grade)
+                    .grade(performanceGrade)
                     .build();
-                seats.add(seat);
+                performanceSeats.add(performanceSeat);
             }
-            index = index + grade.getCount();
+            index = index + performanceGrade.getTotal_seats();
         }
 
         //seatRepository.saveAll(seats);
@@ -163,21 +163,22 @@ public class PerformanceService {
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
         // 이미 예약된 좌석이 있으면 공연 수정 불가
-        boolean isReserved = performance.getSeatList().stream().anyMatch(Seat::getIsReserved);
+        boolean isReserved = performance.getPerformanceSeatList().stream().anyMatch(
+            PerformanceSeat::getIsReserved);
 
         if (isReserved) {
             throw new CustomException(ErrorCode.SEAT_ALREADY_RESERVED);
         }
 
-        List<Grade> gradeList = new ArrayList<>();
+        List<PerformanceGrade> performanceGradeList = new ArrayList<>();
         for (GradeUpdateRequestDto dto : performanceUpdateRequestDto.getGradeList()) {
-            Grade grade = Grade.builder()
+            PerformanceGrade performanceGrade = PerformanceGrade.builder()
                 .name(dto.getName())
                 .price(dto.getPrice())
                 .count(dto.getCount())
                 .build();
 
-            gradeList.add(grade);
+            performanceGradeList.add(performanceGrade);
         }
 
         performance.updatePerformance(performanceUpdateRequestDto.getName(),
@@ -185,7 +186,7 @@ public class PerformanceService {
             performanceUpdateRequestDto.getStartDate(),
             performanceUpdateRequestDto.getEndDate(),
             performanceUpdateRequestDto.getDescription(),
-            gradeList
+            performanceGradeList
         );
 
     }
