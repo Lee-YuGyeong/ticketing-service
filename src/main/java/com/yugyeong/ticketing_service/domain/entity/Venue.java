@@ -41,4 +41,10 @@ public class Venue extends BaseEntity {
         this.totalSeats = totalSeats;
         this.performanceList = performanceList;
     }
+
+    public void changeVenue(String name, String description, int totalSeats) {
+        this.name = name;
+        this.description = description;
+        this.totalSeats = totalSeats;
+    }
 }

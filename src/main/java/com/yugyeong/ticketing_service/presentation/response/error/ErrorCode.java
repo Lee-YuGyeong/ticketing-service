@@ -22,7 +22,7 @@ public enum ErrorCode {
         "이미 탈퇴한 사용자입니다."),
     PERFORMANCE_NOT_FOUND("/errors/performance-not-found", "PERFORMANCE NOT FOUND",
         HttpStatus.NOT_FOUND,
-        "공연장이 존재하지 않습니다."),
+        "공연이 존재하지 않습니다."),
     PERFORMANCE_ALREADY_DELETED("/errors/performance-already-deleted",
         "PERFORMANCE ALREADY DELETED",
         HttpStatus.CONFLICT,
@@ -37,7 +37,10 @@ public enum ErrorCode {
         "이미 공연이 만료되었습니다."),
     SEAT_ALREADY_RESERVED("/errors/seat-already-reserved", "SEAT ALREADY RESERVED",
         HttpStatus.CONFLICT,
-        "좌석이 이미 예매되었습니다.");
+        "좌석이 이미 예매되었습니다."),
+    VENUE_NOT_FOUND("/errors/venue-not-found", "VENUE NOT FOUND",
+        HttpStatus.NOT_FOUND,
+        "공연장이 존재하지 않습니다.");
 
 
     private final String type;

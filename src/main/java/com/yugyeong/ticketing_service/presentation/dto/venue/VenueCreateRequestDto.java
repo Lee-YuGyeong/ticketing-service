@@ -1,4 +1,4 @@
-package com.yugyeong.ticketing_service.presentation.dto.performance;
+package com.yugyeong.ticketing_service.presentation.dto.venue;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;

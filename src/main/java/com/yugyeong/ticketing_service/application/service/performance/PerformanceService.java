@@ -158,7 +158,7 @@ public class PerformanceService {
     public void updatePerformance(Long id,
         PerformanceUpdateRequestDto performanceUpdateRequestDto) {
 
-        // 공연장 유효성 확인
+        // 공연장 유효성 확인 -> and status 수정하기
         Performance performance = performanceRepository.findById(id)
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
