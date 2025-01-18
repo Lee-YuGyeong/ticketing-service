@@ -31,20 +31,15 @@ public class PerformanceSeat extends BaseEntity {
     @JoinColumn(name = "grade_id")
     private PerformanceGrade performanceGrade; // 좌석 등급
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seat_base_id")
-    private SeatBase seatBase; // 좌석 등급
-
     @OneToMany(mappedBy = "seat", cascade = CascadeType.ALL, orphanRemoval = true)
     private Reservation reservation;
 
     @Builder
     public PerformanceSeat(int number, Boolean isReserved, PerformanceGrade performanceGrade,
-        SeatBase seatBase, Reservation reservation) {
+        Reservation reservation) {
         this.number = number;
         this.isReserved = isReserved;
         this.performanceGrade = performanceGrade;
-        this.seatBase = seatBase;
         this.reservation = reservation;
     }
 }

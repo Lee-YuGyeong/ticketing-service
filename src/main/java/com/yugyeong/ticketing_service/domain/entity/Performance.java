@@ -57,6 +57,7 @@ public class Performance extends BaseEntity {
     @Builder
     public Performance(String name, LocalDateTime startDate, LocalDateTime endDate,
         String description, PerformanceStatus status, List<PerformanceGrade> performanceGradeList,
+        List<PerformanceSeat> performanceSeatList,
         Venue venue) {
         this.name = name;
         this.startDate = startDate;
@@ -65,8 +66,9 @@ public class Performance extends BaseEntity {
         this.status = status;
         this.performanceGradeList = performanceGradeList;
         for (PerformanceGrade performanceGrade : performanceGradeList) {
-            this.remainCount += performanceGrade.getTotal_seats(); // 남은 좌석 개수 초기화
+            this.remainCount += performanceGrade.getTotalSeats(); // 남은 좌석 개수 초기화
         }
+        this.performanceSeatList = performanceSeatList;
         this.venue = venue;
     }
 
@@ -80,8 +82,9 @@ public class Performance extends BaseEntity {
      * @param description
      * @param newPerformanceGradeList
      */
-    public void updatePerformance(String name, String venue, LocalDateTime startDate,
-        LocalDateTime endDate, String description, List<PerformanceGrade> newPerformanceGradeList) {
+    public void updatePerformance(String name, LocalDateTime startDate,
+        LocalDateTime endDate, String description, List<PerformanceGrade> newPerformanceGradeList,
+        Venue venue) {
         // 삭제 된 공연장은 수정 불가능
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
@@ -101,7 +104,7 @@ public class Performance extends BaseEntity {
 
         // 좌석 생성은 grade 설정이 완료된 후에 수행
         for (PerformanceGrade performanceGrade : this.performanceGradeList) {
-            for (int i = 1; i <= performanceGrade.getTotal_seats(); i++) {
+            for (int i = 1; i <= performanceGrade.getTotalSeats(); i++) {
                 PerformanceSeat performanceSeat = PerformanceSeat.builder()
                     .number(i)
                     .grade(performanceGrade)
@@ -113,11 +116,11 @@ public class Performance extends BaseEntity {
         }
 
         this.name = name;
-        this.venue = venue;
         this.startDate = startDate;
         this.endDate = endDate;
         this.description = description;
         this.remainCount = this.performanceSeatList.size();
+        this.venue = venue;
     }
 
     /**

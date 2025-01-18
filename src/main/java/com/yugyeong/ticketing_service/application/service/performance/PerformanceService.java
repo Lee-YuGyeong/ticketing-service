@@ -114,12 +114,12 @@ public class PerformanceService {
             .endDate(performanceCreateRequestDto.getEndDate())
             .description(performanceCreateRequestDto.getDescription())
             .status(PerformanceStatus.ACTIVE)
-            .gradeList(performanceGradeList)
+            //.gradeList(performanceGradeList)
             .build();
 
         for (GradeCreateRequestDto gradeCreateRequestDto : performanceCreateRequestDto.getGradeList()) {
             PerformanceGrade performanceGrade = PerformanceGrade.builder()
-                .count(gradeCreateRequestDto.getCount())
+                //.count(gradeCreateRequestDto.getCount())
                 .name(gradeCreateRequestDto.getName())
                 .price(gradeCreateRequestDto.getPrice())
                 .build();
@@ -133,15 +133,15 @@ public class PerformanceService {
         int index = 1;
         List<PerformanceSeat> performanceSeats = new ArrayList<>();
         for (PerformanceGrade performanceGrade : performanceGradeList) {
-            for (int i = index; i <= performanceGrade.getTotal_seats(); i++) {
+            for (int i = index; i <= performanceGrade.getTotalSeats(); i++) {
                 PerformanceSeat performanceSeat = PerformanceSeat.builder()
                     .number(i)
                     .isReserved(false)
-                    .grade(performanceGrade)
+                    //.grade(performanceGrade)
                     .build();
                 performanceSeats.add(performanceSeat);
             }
-            index = index + performanceGrade.getTotal_seats();
+            index = index + performanceGrade.getTotalSeats();
         }
 
         //seatRepository.saveAll(seats);
@@ -175,19 +175,19 @@ public class PerformanceService {
             PerformanceGrade performanceGrade = PerformanceGrade.builder()
                 .name(dto.getName())
                 .price(dto.getPrice())
-                .count(dto.getCount())
+                // .count(dto.getCount())
                 .build();
 
             performanceGradeList.add(performanceGrade);
         }
 
-        performance.updatePerformance(performanceUpdateRequestDto.getName(),
+/*        performance.updatePerformance(performanceUpdateRequestDto.getName(),
             performanceUpdateRequestDto.getVenue(),
             performanceUpdateRequestDto.getStartDate(),
             performanceUpdateRequestDto.getEndDate(),
             performanceUpdateRequestDto.getDescription(),
             performanceGradeList
-        );
+        );*/
 
     }
 

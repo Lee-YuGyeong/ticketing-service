@@ -28,7 +28,7 @@ public class PerformanceGrade extends BaseEntity {
 
     private Double price;
 
-    private int total_seats; // 등급 별 총 좌석 개수
+    private int totalSeats; // 등급 별 총 좌석 개수
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
@@ -38,11 +38,11 @@ public class PerformanceGrade extends BaseEntity {
     private List<PerformanceSeat> performanceSeatList = new ArrayList<>();
 
     @Builder
-    public PerformanceGrade(String name, Double price, int total_seats, Performance performance,
+    public PerformanceGrade(String name, Double price, int totalSeats, Performance performance,
         List<PerformanceSeat> performanceSeatList) {
         this.name = name;
         this.price = price;
-        this.total_seats = total_seats;
+        this.totalSeats = totalSeats;
         this.performance = performance;
         this.performanceSeatList = performanceSeatList;
     }

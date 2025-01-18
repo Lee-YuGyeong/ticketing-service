@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.yugyeong.ticketing_service.domain.entity.Venue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +28,7 @@ public class PerformanceCreateRequestDto {
 
     @Schema(description = "공연 장소", example = "테스트 공연 장소")
     @NotNull(message = "장소는 필수 값 입니다.")
-    private String venue;
+    private Venue venue;
 
     @Schema(description = "공연 시작 시간", example = "2025-01-10T20:00:00", type = "string")
     @NotNull(message = "시작 시간은 필수 값 입니다.")
