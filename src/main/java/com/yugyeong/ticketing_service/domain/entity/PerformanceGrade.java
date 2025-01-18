@@ -34,7 +34,7 @@ public class PerformanceGrade extends BaseEntity {
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
-    @OneToMany(mappedBy = "grade")
+    @OneToMany(mappedBy = "performanceGrade")
     private List<PerformanceSeat> performanceSeatList = new ArrayList<>();
 
     @Builder

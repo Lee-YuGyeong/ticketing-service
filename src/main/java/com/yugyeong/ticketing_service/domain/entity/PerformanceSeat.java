@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class PerformanceSeat extends BaseEntity {
     @JoinColumn(name = "grade_id")
     private PerformanceGrade performanceGrade; // 좌석 등급
 
-    @OneToMany(mappedBy = "seat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "performanceSeat", cascade = CascadeType.ALL, orphanRemoval = true)
     private Reservation reservation;
 
     @Builder

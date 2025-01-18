@@ -46,9 +46,11 @@ public class Performance extends BaseEntity {
 
     @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PerformanceGrade> performanceGradeList = new ArrayList<>(); // 좌석 등급
+/*
 
     @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PerformanceSeat> performanceSeatList = new ArrayList<>();
+*/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
@@ -68,7 +70,7 @@ public class Performance extends BaseEntity {
         for (PerformanceGrade performanceGrade : performanceGradeList) {
             this.remainCount += performanceGrade.getTotalSeats(); // 남은 좌석 개수 초기화
         }
-        this.performanceSeatList = performanceSeatList;
+        //this.performanceSeatList = performanceSeatList;
         this.venue = venue;
     }
 
@@ -91,7 +93,7 @@ public class Performance extends BaseEntity {
         }
 
         // 먼저 연결된 좌석들을 제거 (Seat가 Grade를 참조하므로 Seat를 먼저 제거)
-        this.performanceSeatList.clear();
+        //this.performanceSeatList.clear();
 
         // 기존 등급들을 모두 제거
         this.performanceGradeList.clear();
@@ -107,11 +109,11 @@ public class Performance extends BaseEntity {
             for (int i = 1; i <= performanceGrade.getTotalSeats(); i++) {
                 PerformanceSeat performanceSeat = PerformanceSeat.builder()
                     .number(i)
-                    .grade(performanceGrade)
-                    .performance(this)
+                    //.grade(performanceGrade)
+                    // .performance(this)
                     .isReserved(false)
                     .build();
-                this.performanceSeatList.add(performanceSeat);
+                // this.performanceSeatList.add(performanceSeat);
             }
         }
 
@@ -119,7 +121,7 @@ public class Performance extends BaseEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.description = description;
-        this.remainCount = this.performanceSeatList.size();
+        //this.remainCount = this.performanceSeatList.size();
         this.venue = venue;
     }
 

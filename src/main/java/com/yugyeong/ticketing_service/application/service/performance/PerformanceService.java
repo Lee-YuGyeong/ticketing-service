@@ -163,12 +163,12 @@ public class PerformanceService {
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
         // 이미 예약된 좌석이 있으면 공연 수정 불가
-        boolean isReserved = performance.getPerformanceSeatList().stream().anyMatch(
+        /*boolean isReserved = performance.getPerformanceSeatList().stream().anyMatch(
             PerformanceSeat::getIsReserved);
 
         if (isReserved) {
             throw new CustomException(ErrorCode.SEAT_ALREADY_RESERVED);
-        }
+            }*/
 
         List<PerformanceGrade> performanceGradeList = new ArrayList<>();
         for (GradeUpdateRequestDto dto : performanceUpdateRequestDto.getGradeList()) {
