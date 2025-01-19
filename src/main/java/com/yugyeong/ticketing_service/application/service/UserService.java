@@ -1,4 +1,4 @@
-package com.yugyeong.ticketing_service.application.service.user;
+package com.yugyeong.ticketing_service.application.service;
 
 import com.yugyeong.ticketing_service.domain.entity.User;
 import com.yugyeong.ticketing_service.domain.repository.UserRepository;

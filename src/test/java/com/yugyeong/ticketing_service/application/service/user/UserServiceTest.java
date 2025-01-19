@@ -17,7 +17,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.yugyeong.ticketing_service.application.service.auth.PrincipalDetailsService;
+import com.yugyeong.ticketing_service.application.service.PrincipalDetailsService;
+import com.yugyeong.ticketing_service.application.service.UserService;
 import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.User;
 import com.yugyeong.ticketing_service.domain.repository.UserRepository;

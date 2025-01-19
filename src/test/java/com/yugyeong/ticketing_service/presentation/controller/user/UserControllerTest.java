@@ -13,7 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yugyeong.ticketing_service.application.service.user.UserService;
+import com.yugyeong.ticketing_service.application.service.UserService;
+import com.yugyeong.ticketing_service.presentation.controller.UserController;
 import com.yugyeong.ticketing_service.presentation.dto.user.UserResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.user.UserUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;

@@ -1,6 +1,6 @@
-package com.yugyeong.ticketing_service.presentation.controller.performance;
+package com.yugyeong.ticketing_service.presentation.controller;
 
-import com.yugyeong.ticketing_service.application.service.performance.PerformanceService;
+import com.yugyeong.ticketing_service.application.service.PerformanceService;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;

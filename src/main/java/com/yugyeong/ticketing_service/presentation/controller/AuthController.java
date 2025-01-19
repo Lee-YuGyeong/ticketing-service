@@ -1,6 +1,6 @@
-package com.yugyeong.ticketing_service.presentation.controller.auth;
+package com.yugyeong.ticketing_service.presentation.controller;
 
-import com.yugyeong.ticketing_service.application.service.user.UserService;
+import com.yugyeong.ticketing_service.application.service.UserService;
 import com.yugyeong.ticketing_service.presentation.dto.user.UserJoinRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;

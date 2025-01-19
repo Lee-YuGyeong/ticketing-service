@@ -1,4 +1,4 @@
-package com.yugyeong.ticketing_service.application.service.performance;
+package com.yugyeong.ticketing_service.application.service;
 
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
