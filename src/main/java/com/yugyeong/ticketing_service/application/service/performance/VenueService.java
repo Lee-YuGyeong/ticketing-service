@@ -46,6 +46,7 @@ public class VenueService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<VenueResponseDto> getAllVenues() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -71,6 +72,7 @@ public class VenueService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public VenueResponseDto getVenue(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -94,5 +96,12 @@ public class VenueService {
             .totalSeats(venue.getTotalSeats())
             .status(venue.isStatus())
             .build();
+    }
+
+    public void deleteVenue(Long id) {
+        Venue venue = venueRepository.findById(id)
+            .orElseThrow(() -> new CustomException(ErrorCode.VENUE_NOT_FOUND));
+
+        venue.delete();
     }
 }

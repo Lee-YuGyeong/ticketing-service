@@ -21,7 +21,8 @@ public enum SuccessCode {
     PERFORMANCE_EXPIRE("공연 만료 성공", HttpStatus.OK, "공연 만료 설정이 성공적으로 완료되었습니다."),
     VENUE_CREATE("공연장 등록 성공", HttpStatus.CREATED, "공연장 등록이 성공적으로 완료되었습니다."),
     VENUE_UPDATE("공연장 수정 성공", HttpStatus.CREATED, "공연장 수정이 성공적으로 완료되었습니다."),
-    VENUE_FOUND("공연장 조회 성공", HttpStatus.OK, "공연장 조회가 성공적으로 완료되었습니다.");
+    VENUE_FOUND("공연장 조회 성공", HttpStatus.OK, "공연장 조회가 성공적으로 완료되었습니다."),
+    VENUE_DELETE("공연장 삭제 성공", HttpStatus.OK, "공연장 삭제가 성공적으로 완료되었습니다.");
 
 
     private final String title;

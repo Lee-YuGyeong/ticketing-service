@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -129,4 +130,25 @@ public class VenueController {
                 .build());
     }
 
+    @Operation(
+        summary = "공연장 삭제",
+        description = "공연장을 삭제합니다."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "공연장 삭제 성공",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SuccessResponse.class)))
+    })
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<SuccessResponse> deleteVenue(@PathVariable("id") Long id) {
+        venueService.deleteVenue(id);
+
+        return ResponseEntity.ok()
+            .body(SuccessResponse.builder()
+                .title(SuccessCode.VENUE_DELETE.getTitle())
+                .status(SuccessCode.VENUE_DELETE.getStatus().value())
+                .detail(SuccessCode.VENUE_DELETE.getDetail())
+                .build());
+    }
 }

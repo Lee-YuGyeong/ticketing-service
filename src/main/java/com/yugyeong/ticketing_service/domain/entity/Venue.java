@@ -48,4 +48,8 @@ public class Venue extends BaseEntity {
         this.description = description;
         this.totalSeats = totalSeats;
     }
+
+    public void delete() {
+        this.status = false;
+    }
 }
