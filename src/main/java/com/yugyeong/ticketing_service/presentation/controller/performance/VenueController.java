@@ -2,6 +2,7 @@ package com.yugyeong.ticketing_service.presentation.controller.performance;
 
 import com.yugyeong.ticketing_service.application.service.performance.VenueService;
 import com.yugyeong.ticketing_service.presentation.dto.venue.VenueCreateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.venue.VenueResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.venue.VenueUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessResponse;
@@ -11,10 +12,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,6 +77,31 @@ public class VenueController {
                 .title(SuccessCode.VENUE_UPDATE.getTitle())
                 .status(SuccessCode.VENUE_UPDATE.getStatus().value())
                 .detail(SuccessCode.VENUE_UPDATE.getDetail())
+                .build());
+    }
+
+
+    @Operation(
+        summary = "공연장 목록 조회",
+        description = "모든 공연장 정보를 조회합니다."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "공연장 목록 조회 성공",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SuccessResponse.class)))
+    })
+    @GetMapping("/venues")
+    public ResponseEntity<SuccessResponse> getAllVenues() {
+        List<VenueResponseDto> venues = venueService.getAllVenues();
+
+        return ResponseEntity.ok()
+            .body(SuccessResponse.builder()
+                .title(SuccessCode.VENUE_FOUND.getTitle())
+                .status(SuccessCode.VENUE_FOUND.getStatus().value())
+                .detail(SuccessCode.VENUE_FOUND.getDetail())
+                .data(Map.of(
+                    "venues", venues
+                ))
                 .build());
     }
 
