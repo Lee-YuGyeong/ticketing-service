@@ -105,4 +105,28 @@ public class VenueController {
                 .build());
     }
 
+    @Operation(
+        summary = "공연장 정보 조회",
+        description = "공연장 정보를 조회합니다."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "공연장 조회 성공",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SuccessResponse.class)))
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<SuccessResponse> getVenue(@PathVariable("id") Long id) {
+        VenueResponseDto venue = venueService.getVenue(id);
+
+        return ResponseEntity.ok()
+            .body(SuccessResponse.builder()
+                .title(SuccessCode.VENUE_FOUND.getTitle())
+                .status(SuccessCode.VENUE_FOUND.getStatus().value())
+                .detail(SuccessCode.VENUE_FOUND.getDetail())
+                .data(Map.of(
+                    "venue", venue
+                ))
+                .build());
+    }
+
 }

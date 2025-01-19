@@ -70,4 +70,29 @@ public class VenueService {
                 .build())
             .collect(Collectors.toList());
     }
+
+    public VenueResponseDto getVenue(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdmin = authentication.getAuthorities()
+            .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        Venue venue = null;
+
+        //관리자만 삭제된 공연 조회 가능
+        if (isAdmin) {
+            venue = venueRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.VENUE_NOT_FOUND));
+        } else {
+            venue = venueRepository.findByIdAndStatus(id, false)
+                .orElseThrow(() -> new CustomException(ErrorCode.VENUE_NOT_FOUND));
+        }
+
+        return VenueResponseDto.builder()
+            .name(venue.getName())
+            .description(venue.getDescription())
+            .totalSeats(venue.getTotalSeats())
+            .status(venue.isStatus())
+            .build();
+    }
 }
