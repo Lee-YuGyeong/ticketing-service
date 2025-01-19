@@ -1,4 +1,4 @@
-package com.yugyeong.ticketing_service.application;
+package com.yugyeong.ticketing_service.application.service;
 
 import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
 import lombok.RequiredArgsConstructor;
