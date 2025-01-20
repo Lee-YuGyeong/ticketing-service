@@ -59,7 +59,6 @@ public class Performance extends BaseEntity {
         this.endDate = endDate;
         this.description = description;
         this.status = status;
-        this.performanceGradeList = performanceGradeList;
         this.venue = venue;
     }
 
@@ -150,12 +149,8 @@ public class Performance extends BaseEntity {
         this.status = PerformanceStatus.EXPIRE;
     }
 
-    public void changePerformanceGrade(List<PerformanceGrade> performanceGradeList) {
-        this.performanceGradeList.clear();
-
-        for (PerformanceGrade performanceGrade : performanceGradeList) {
-            performanceGrade.changePerformance(this);
-            this.performanceGradeList.add(performanceGrade);
-        }
+    public void addPerformanceGrade(PerformanceGrade performanceGrade) {
+        performanceGradeList.add(performanceGrade);
+        performanceGrade.changePerformance(this);
     }
 }

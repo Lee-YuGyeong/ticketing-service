@@ -133,23 +133,21 @@ public class PerformanceService {
             .build();
 
         // 좌석 생성
-        int index = 1;
+        int index = 0;
         List<PerformanceSeat> performanceSeats = new ArrayList<>();
 
         for (PerformanceGrade performanceGrade : performanceGradeList) {
-            for (int i = index; i <= performanceGrade.getTotalSeats(); i++) {
+            for (int i = index + 1; i <= performanceGrade.getTotalSeats() + index; i++) {
                 PerformanceSeat performanceSeat = PerformanceSeat.builder()
                     .number(i)
                     .isReserved(false)
                     .performanceGrade(performanceGrade)
                     .build();
-                performanceSeats.add(performanceSeat);
+                performanceGrade.addPerformanceSeat(performanceSeat);
             }
-            performanceGrade.changePerformanceSeat(performanceSeats);
+            performance.addPerformanceGrade(performanceGrade);
             index = index + performanceGrade.getTotalSeats();
         }
-
-        performance.changePerformanceGrade(performanceGradeList);
 
         performanceRepository.save(performance);
     }

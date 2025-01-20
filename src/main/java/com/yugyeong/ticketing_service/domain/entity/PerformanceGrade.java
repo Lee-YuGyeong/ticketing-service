@@ -47,7 +47,6 @@ public class PerformanceGrade extends BaseEntity {
         this.price = price;
         this.totalSeats = totalSeats;
         this.performance = performance;
-        this.performanceSeatList = performanceSeatList;
         this.remainSeats = totalSeats;
     }
 
@@ -55,14 +54,8 @@ public class PerformanceGrade extends BaseEntity {
         this.performance = performance;
     }
 
-    public void changePerformanceSeat(List<PerformanceSeat> performanceSeats) {
-        if (this.performanceSeatList != null) {
-            this.performanceSeatList.clear();
-        }
-
-        for (PerformanceSeat performanceSeat : performanceSeats) {
-            performanceSeat.changePerformanceGrade(this);
-            this.performanceSeatList.add(performanceSeat);
-        }
+    public void addPerformanceSeat(PerformanceSeat performanceSeat) {
+        performanceSeatList.add(performanceSeat);
+        performanceSeat.changePerformanceGrade(this);
     }
 }
