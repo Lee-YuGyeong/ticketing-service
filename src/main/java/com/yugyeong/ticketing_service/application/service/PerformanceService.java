@@ -134,8 +134,6 @@ public class PerformanceService {
 
         // 좌석 생성
         int index = 0;
-        List<PerformanceSeat> performanceSeats = new ArrayList<>();
-
         for (PerformanceGrade performanceGrade : performanceGradeList) {
             for (int i = index + 1; i <= performanceGrade.getTotalSeats() + index; i++) {
                 PerformanceSeat performanceSeat = PerformanceSeat.builder()
