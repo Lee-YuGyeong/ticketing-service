@@ -51,8 +51,7 @@ public class Performance extends BaseEntity {
 
     @Builder
     public Performance(String name, LocalDateTime startDate, LocalDateTime endDate,
-        String description, PerformanceStatus status, List<PerformanceGrade> performanceGradeList,
-        List<PerformanceSeat> performanceSeatList,
+        String description, PerformanceStatus status,
         Venue venue) {
         this.name = name;
         this.startDate = startDate;
@@ -70,11 +69,9 @@ public class Performance extends BaseEntity {
      * @param startDate
      * @param endDate
      * @param description
-     * @param newPerformanceGradeList
      */
-    public void updatePerformance(String name, LocalDateTime startDate,
-        LocalDateTime endDate, String description, List<PerformanceGrade> newPerformanceGradeList,
-        Venue venue) {
+    public void updatePerformance(String name, LocalDateTime startDate, LocalDateTime endDate,
+        String description, Venue venue) {
         // 삭제 된 공연장은 수정 불가능
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
@@ -84,16 +81,16 @@ public class Performance extends BaseEntity {
         //this.performanceSeatList.clear();
 
         // 기존 등급들을 모두 제거
-        this.performanceGradeList.clear();
+        //this.performanceGradeList.clear();
 
         // 새로운 등급 연관관계 설정 및 좌석 생성
-        for (PerformanceGrade performanceGrade : newPerformanceGradeList) {
+/*        for (PerformanceGrade performanceGrade : performanceGradeList) {
             performanceGrade.changePerformance(this);
             this.performanceGradeList.add(performanceGrade);
-        }
+        }*/
 
         // 좌석 생성은 grade 설정이 완료된 후에 수행
-        for (PerformanceGrade performanceGrade : this.performanceGradeList) {
+        /*for (PerformanceGrade performanceGrade : this.performanceGradeList) {
             for (int i = 1; i <= performanceGrade.getTotalSeats(); i++) {
                 PerformanceSeat performanceSeat = PerformanceSeat.builder()
                     .number(i)
@@ -103,13 +100,12 @@ public class Performance extends BaseEntity {
                     .build();
                 // this.performanceSeatList.add(performanceSeat);
             }
-        }
+        }*/
 
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.description = description;
-        //this.remainCount = this.performanceSeatList.size();
         this.venue = venue;
     }
 

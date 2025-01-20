@@ -18,9 +18,9 @@ import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
-import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeCreateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
@@ -256,12 +256,12 @@ class PerformanceServiceTest {
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
-        GradeUpdateRequestDto dto1 = GradeUpdateRequestDto.builder()
+        PerformanceGradeUpdateRequestDto dto1 = PerformanceGradeUpdateRequestDto.builder()
             .name("S")
             .price(10000.0)
             .count(50)
             .build();
-        GradeUpdateRequestDto dto2 = GradeUpdateRequestDto.builder()
+        PerformanceGradeUpdateRequestDto dto2 = PerformanceGradeUpdateRequestDto.builder()
             .name("A")
             .price(9000.0)
             .count(100)
@@ -296,12 +296,12 @@ class PerformanceServiceTest {
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.empty());
 
-        GradeUpdateRequestDto dto1 = GradeUpdateRequestDto.builder()
+        PerformanceGradeUpdateRequestDto dto1 = PerformanceGradeUpdateRequestDto.builder()
             .name("S")
             .price(10000.0)
             .count(50)
             .build();
-        GradeUpdateRequestDto dto2 = GradeUpdateRequestDto.builder()
+        PerformanceGradeUpdateRequestDto dto2 = PerformanceGradeUpdateRequestDto.builder()
             .name("A")
             .price(9000.0)
             .count(100)

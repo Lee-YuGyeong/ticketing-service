@@ -8,13 +8,11 @@ import com.yugyeong.ticketing_service.domain.entity.Venue;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
 import com.yugyeong.ticketing_service.domain.repository.VenueRepository;
-import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -129,7 +127,6 @@ public class PerformanceService {
             .endDate(performanceCreateRequestDto.getEndDate())
             .description(performanceCreateRequestDto.getDescription())
             .status(PerformanceStatus.ACTIVE)
-            .performanceGradeList(performanceGradeList)
             .build();
 
         // 좌석 생성
@@ -171,24 +168,45 @@ public class PerformanceService {
             throw new CustomException(ErrorCode.SEAT_ALREADY_RESERVED);
             }*/
 
-        List<PerformanceGrade> performanceGradeList = new ArrayList<>();
-        for (GradeUpdateRequestDto dto : performanceUpdateRequestDto.getGradeList()) {
-            PerformanceGrade performanceGrade = PerformanceGrade.builder()
-                .name(dto.getName())
-                .price(dto.getPrice())
-                // .count(dto.getCount())
-                .build();
+        // 공연장 조회
+        Venue venue = venueRepository.findByIdAndStatus(performanceUpdateRequestDto.getVenueId(),
+                true)
+            .orElseThrow(() -> new CustomException(ErrorCode.VENUE_NOT_FOUND));
 
-            performanceGradeList.add(performanceGrade);
+        List<PerformanceGrade> performanceGradeList = performanceUpdateRequestDto.getPerformanceGradeList()
+            .stream()
+            .map(
+                performanceGradeUpdateRequestDto -> PerformanceGrade.builder()
+                    .name(performanceGradeUpdateRequestDto.getName())
+                    .price(performanceGradeUpdateRequestDto.getPrice())
+                    .totalSeats(performanceGradeUpdateRequestDto.getTotalSeats())
+                    .build()
+            ).toList();
+
+        performance.getPerformanceGradeList().clear();
+
+        // 좌석 생성
+        int index = 0;
+        for (PerformanceGrade performanceGrade : performanceGradeList) {
+            for (int i = index + 1; i <= performanceGrade.getTotalSeats() + index; i++) {
+                PerformanceSeat performanceSeat = PerformanceSeat.builder()
+                    .number(i)
+                    .isReserved(false)
+                    .performanceGrade(performanceGrade)
+                    .build();
+                performanceGrade.addPerformanceSeat(performanceSeat);
+            }
+            performance.addPerformanceGrade(performanceGrade);
+            index = index + performanceGrade.getTotalSeats();
         }
 
-/*        performance.updatePerformance(performanceUpdateRequestDto.getName(),
-            performanceUpdateRequestDto.getVenue(),
+        performance.updatePerformance(performanceUpdateRequestDto.getName(),
             performanceUpdateRequestDto.getStartDate(),
             performanceUpdateRequestDto.getEndDate(),
             performanceUpdateRequestDto.getDescription(),
-            performanceGradeList
-        );*/
+            venue
+        );
+
 
     }
 

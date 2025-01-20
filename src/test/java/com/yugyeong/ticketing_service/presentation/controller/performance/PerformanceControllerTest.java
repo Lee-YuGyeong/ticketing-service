@@ -17,9 +17,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yugyeong.ticketing_service.application.service.PerformanceService;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.presentation.controller.PerformanceController;
-import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeCreateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
@@ -155,12 +155,12 @@ class PerformanceControllerTest {
     @WithMockUser(roles = "ADMIN")
     void 공연_수정_성공() throws Exception {
         // given
-        GradeUpdateRequestDto dto1 = GradeUpdateRequestDto.builder()
+        PerformanceGradeUpdateRequestDto dto1 = PerformanceGradeUpdateRequestDto.builder()
             .name("S")
             .price(10000.0)
             .count(50)
             .build();
-        GradeUpdateRequestDto dto2 = GradeUpdateRequestDto.builder()
+        PerformanceGradeUpdateRequestDto dto2 = PerformanceGradeUpdateRequestDto.builder()
             .name("A")
             .price(9000.0)
             .count(100)

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GradeUpdateRequestDto {
+public class PerformanceGradeUpdateRequestDto {
 
     @Schema(description = "좌석 등급", example = "S")
     @NotNull(message = "좌석 등급은 필수 값 입니다.")
@@ -26,5 +26,5 @@ public class GradeUpdateRequestDto {
     @Schema(description = "좌석 수", example = "50")
     @NotNull(message = "좌석 수는 필수 값 입니다.")
     @Min(value = 0, message = "좌석 수는 0 이상이여야 합니다.")
-    private int count;
+    private int totalSeats;
 }
