@@ -39,18 +39,11 @@ public class Performance extends BaseEntity {
 
     private String description;
 
-    private int remainCount; // 남은 좌석 개수
-
     @Enumerated(EnumType.STRING)
     private PerformanceStatus status;
 
     @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PerformanceGrade> performanceGradeList = new ArrayList<>(); // 좌석 등급
-/*
-
-    @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PerformanceSeat> performanceSeatList = new ArrayList<>();
-*/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
@@ -67,10 +60,6 @@ public class Performance extends BaseEntity {
         this.description = description;
         this.status = status;
         this.performanceGradeList = performanceGradeList;
-        for (PerformanceGrade performanceGrade : performanceGradeList) {
-            this.remainCount += performanceGrade.getTotalSeats(); // 남은 좌석 개수 초기화
-        }
-        //this.performanceSeatList = performanceSeatList;
         this.venue = venue;
     }
 
@@ -161,9 +150,12 @@ public class Performance extends BaseEntity {
         this.status = PerformanceStatus.EXPIRE;
     }
 
-    // gradeList를 관리하는 메서드 추가
-    public void addGrade(PerformanceGrade performanceGrade) {
-        this.performanceGradeList.add(performanceGrade);
-        performanceGrade.changePerformance(this);
+    public void changePerformanceGrade(List<PerformanceGrade> performanceGradeList) {
+        this.performanceGradeList.clear();
+
+        for (PerformanceGrade performanceGrade : performanceGradeList) {
+            performanceGrade.changePerformance(this);
+            this.performanceGradeList.add(performanceGrade);
+        }
     }
 }

@@ -4,9 +4,10 @@ import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
 import com.yugyeong.ticketing_service.domain.entity.PerformanceGrade;
 import com.yugyeong.ticketing_service.domain.entity.PerformanceSeat;
+import com.yugyeong.ticketing_service.domain.entity.Venue;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
-import com.yugyeong.ticketing_service.presentation.dto.performance.GradeCreateRequestDto;
+import com.yugyeong.ticketing_service.domain.repository.VenueRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
@@ -30,6 +31,7 @@ public class PerformanceService {
 
     private final PerformanceRepository performanceRepository;
     private final SeatRepository seatRepository;
+    private final VenueRepository venueRepository;
 
     /**
      * 전체 공연 목록 조회
@@ -105,46 +107,49 @@ public class PerformanceService {
      * @param performanceCreateRequestDto
      */
     public void createPerformance(PerformanceCreateRequestDto performanceCreateRequestDto) {
-        List<PerformanceGrade> performanceGradeList = new ArrayList<>();
+        // 공연장 조회
+        Venue venue = venueRepository.findByIdAndStatus(performanceCreateRequestDto.getVenueId(),
+                true)
+            .orElseThrow(() -> new CustomException(ErrorCode.VENUE_NOT_FOUND));
+
+        List<PerformanceGrade> performanceGradeList = performanceCreateRequestDto.getPerformanceGradeList()
+            .stream()
+            .map(
+                performanceGradeCreateRequestDto -> PerformanceGrade.builder()
+                    .name(performanceGradeCreateRequestDto.getName())
+                    .price(performanceGradeCreateRequestDto.getPrice())
+                    .totalSeats(performanceGradeCreateRequestDto.getTotalSeats())
+                    .build()
+            ).toList();
 
         Performance performance = Performance.builder()
             .name(performanceCreateRequestDto.getName())
-            .venue(performanceCreateRequestDto.getVenue())
+            .venue(venue)
             .startDate(performanceCreateRequestDto.getStartDate())
             .endDate(performanceCreateRequestDto.getEndDate())
             .description(performanceCreateRequestDto.getDescription())
             .status(PerformanceStatus.ACTIVE)
-            //.gradeList(performanceGradeList)
+            .performanceGradeList(performanceGradeList)
             .build();
 
-        for (GradeCreateRequestDto gradeCreateRequestDto : performanceCreateRequestDto.getGradeList()) {
-            PerformanceGrade performanceGrade = PerformanceGrade.builder()
-                //.count(gradeCreateRequestDto.getCount())
-                .name(gradeCreateRequestDto.getName())
-                .price(gradeCreateRequestDto.getPrice())
-                .build();
-            performance.getPerformanceGradeList().add(performanceGrade);
-        }
-
-        for (PerformanceGrade performanceGrade : performanceGradeList) {
-            performanceGrade.changePerformance(performance);
-        }
-
+        // 좌석 생성
         int index = 1;
         List<PerformanceSeat> performanceSeats = new ArrayList<>();
+
         for (PerformanceGrade performanceGrade : performanceGradeList) {
             for (int i = index; i <= performanceGrade.getTotalSeats(); i++) {
                 PerformanceSeat performanceSeat = PerformanceSeat.builder()
                     .number(i)
                     .isReserved(false)
-                    //.grade(performanceGrade)
+                    .performanceGrade(performanceGrade)
                     .build();
                 performanceSeats.add(performanceSeat);
             }
+            performanceGrade.changePerformanceSeat(performanceSeats);
             index = index + performanceGrade.getTotalSeats();
         }
 
-        //seatRepository.saveAll(seats);
+        performance.changePerformanceGrade(performanceGradeList);
 
         performanceRepository.save(performance);
     }

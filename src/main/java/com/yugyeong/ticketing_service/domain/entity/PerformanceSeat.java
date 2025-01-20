@@ -42,4 +42,8 @@ public class PerformanceSeat extends BaseEntity {
         this.performanceGrade = performanceGrade;
         this.reservation = reservation;
     }
+
+    public void changePerformanceGrade(PerformanceGrade performanceGrade) {
+        this.performanceGrade = performanceGrade;
+    }
 }

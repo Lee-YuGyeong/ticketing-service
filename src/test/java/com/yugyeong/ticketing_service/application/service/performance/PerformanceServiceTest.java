@@ -18,9 +18,9 @@ import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
-import com.yugyeong.ticketing_service.presentation.dto.performance.GradeCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
@@ -200,12 +200,12 @@ class PerformanceServiceTest {
     @Test
     void 공연_등록_성공() {
         //given
-        GradeCreateRequestDto gradeCreateRequestDto1 = GradeCreateRequestDto.builder()
+        PerformanceGradeCreateRequestDto performanceGradeCreateRequestDto1 = PerformanceGradeCreateRequestDto.builder()
             .name("S")
             .price(10000.0)
             .count(50)
             .build();
-        GradeCreateRequestDto gradeCreateRequestDto2 = GradeCreateRequestDto.builder()
+        PerformanceGradeCreateRequestDto performanceGradeCreateRequestDto2 = PerformanceGradeCreateRequestDto.builder()
             .name("A")
             .price(9000.0)
             .count(100)
@@ -217,7 +217,8 @@ class PerformanceServiceTest {
             .startDate(LocalDateTime.now())
             .endDate(LocalDateTime.now())
             .description("A wonderful performance")
-            .gradeList(List.of(gradeCreateRequestDto1, gradeCreateRequestDto2))
+            .gradeList(
+                List.of(performanceGradeCreateRequestDto1, performanceGradeCreateRequestDto2))
             .build();
 
         //when

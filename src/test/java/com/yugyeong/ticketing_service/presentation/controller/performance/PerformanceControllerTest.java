@@ -17,9 +17,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yugyeong.ticketing_service.application.service.PerformanceService;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.presentation.controller.PerformanceController;
-import com.yugyeong.ticketing_service.presentation.dto.performance.GradeCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.GradeUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
+import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceUpdateRequestDto;
 import com.yugyeong.ticketing_service.presentation.response.success.SuccessCode;
@@ -106,15 +106,17 @@ class PerformanceControllerTest {
     @WithMockUser(roles = "ADMIN")
     void 공연_등록_성공() throws Exception {
         // given
-        GradeCreateRequestDto seat1 = new GradeCreateRequestDto("S", 1000.0, 50);
-        GradeCreateRequestDto seat2 = new GradeCreateRequestDto("A", 500.0, 100);
+        PerformanceGradeCreateRequestDto seat1 = new PerformanceGradeCreateRequestDto("S", 1000.0,
+            50);
+        PerformanceGradeCreateRequestDto seat2 = new PerformanceGradeCreateRequestDto("A", 500.0,
+            100);
 
-        GradeCreateRequestDto gradeCreateRequestDto1 = GradeCreateRequestDto.builder()
+        PerformanceGradeCreateRequestDto performanceGradeCreateRequestDto1 = PerformanceGradeCreateRequestDto.builder()
             .name("S")
             .price(10000.0)
             .count(50)
             .build();
-        GradeCreateRequestDto gradeCreateRequestDto2 = GradeCreateRequestDto.builder()
+        PerformanceGradeCreateRequestDto performanceGradeCreateRequestDto2 = PerformanceGradeCreateRequestDto.builder()
             .name("A")
             .price(9000.0)
             .count(100)
@@ -126,7 +128,8 @@ class PerformanceControllerTest {
             .startDate(LocalDateTime.now())
             .endDate(LocalDateTime.now())
             .description("A wonderful performance")
-            .gradeList(List.of(gradeCreateRequestDto1, gradeCreateRequestDto2))
+            .gradeList(
+                List.of(performanceGradeCreateRequestDto1, performanceGradeCreateRequestDto2))
             .build();
 
         doNothing().when(performanceService)

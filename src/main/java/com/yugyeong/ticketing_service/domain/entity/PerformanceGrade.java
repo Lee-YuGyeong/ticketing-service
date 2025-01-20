@@ -1,5 +1,6 @@
 package com.yugyeong.ticketing_service.domain.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,11 +31,13 @@ public class PerformanceGrade extends BaseEntity {
 
     private int totalSeats; // 등급 별 총 좌석 개수
 
+    private int remainSeats; // 남은 좌석 개수
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
-    @OneToMany(mappedBy = "performanceGrade")
+    @OneToMany(mappedBy = "performanceGrade", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PerformanceSeat> performanceSeatList = new ArrayList<>();
 
     @Builder
@@ -45,9 +48,21 @@ public class PerformanceGrade extends BaseEntity {
         this.totalSeats = totalSeats;
         this.performance = performance;
         this.performanceSeatList = performanceSeatList;
+        this.remainSeats = totalSeats;
     }
 
     public void changePerformance(Performance performance) {
         this.performance = performance;
+    }
+
+    public void changePerformanceSeat(List<PerformanceSeat> performanceSeats) {
+        if (this.performanceSeatList != null) {
+            this.performanceSeatList.clear();
+        }
+
+        for (PerformanceSeat performanceSeat : performanceSeats) {
+            performanceSeat.changePerformanceGrade(this);
+            this.performanceSeatList.add(performanceSeat);
+        }
     }
 }

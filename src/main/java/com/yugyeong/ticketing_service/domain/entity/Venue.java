@@ -34,12 +34,11 @@ public class Venue extends BaseEntity {
     private List<Performance> performanceList = new ArrayList<>();
 
     @Builder
-    public Venue(String name, String description, int totalSeats, boolean status,
+    public Venue(String name, String description, int totalSeats,
         List<Performance> performanceList) {
         this.name = name;
         this.description = description;
         this.totalSeats = totalSeats;
-        this.status = status;
         this.performanceList = performanceList;
     }
 
