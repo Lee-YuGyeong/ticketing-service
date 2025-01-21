@@ -157,16 +157,18 @@ public class PerformanceService {
         PerformanceUpdateRequestDto performanceUpdateRequestDto) {
 
         // 공연장 유효성 확인 -> and status 수정하기
-        Performance performance = performanceRepository.findById(id)
+        Performance performance = (Performance) performanceRepository.findByIdAndStatusNot(id,
+                PerformanceStatus.DELETE)
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
         // 이미 예약된 좌석이 있으면 공연 수정 불가
-        /*boolean isReserved = performance.getPerformanceSeatList().stream().anyMatch(
-            PerformanceSeat::getIsReserved);
+        boolean isReserved = performance.getPerformanceGradeList().stream().anyMatch(
+            performanceGrade -> performanceGrade.getTotalSeats()
+                != performanceGrade.getRemainSeats());
 
         if (isReserved) {
             throw new CustomException(ErrorCode.SEAT_ALREADY_RESERVED);
-            }*/
+        }
 
         // 공연장 조회
         Venue venue = venueRepository.findByIdAndStatus(performanceUpdateRequestDto.getVenueId(),

@@ -25,7 +25,7 @@ public class PerformanceUpdateRequestDto {
     @NotNull(message = "이름은 필수 값 입니다.")
     private String name;
 
-    @Schema(description = "공연 장소", example = "테스트 공연 장소2")
+    @Schema(description = "공연 장소", example = "1")
     @NotNull(message = "장소는 필수 값 입니다.")
     private Long venueId;
 
