@@ -1,5 +1,13 @@
 package com.yugyeong.ticketing_service.application.service.performance;
 
+import static com.yugyeong.ticketing_service.testutil.TestConstants.PERFORMANCE_DESCRIPTION;
+import static com.yugyeong.ticketing_service.testutil.TestConstants.PERFORMANCE_GRADE_NAME;
+import static com.yugyeong.ticketing_service.testutil.TestConstants.PERFORMANCE_GRADE_PRICE;
+import static com.yugyeong.ticketing_service.testutil.TestConstants.PERFORMANCE_GRADE_TOTAL_SEATS;
+import static com.yugyeong.ticketing_service.testutil.TestConstants.PERFORMANCE_NAME;
+import static com.yugyeong.ticketing_service.testutil.TestConstants.VENUE_DESCRIPTION;
+import static com.yugyeong.ticketing_service.testutil.TestConstants.VENUE_NAME;
+import static com.yugyeong.ticketing_service.testutil.TestConstants.VENUE_TOTAL_SEATS;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,6 +24,7 @@ import com.yugyeong.ticketing_service.application.service.PerformanceService;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
+import com.yugyeong.ticketing_service.domain.entity.Venue;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
@@ -69,23 +78,30 @@ class PerformanceServiceTest {
 
         doReturn(grantedAuthorities).when(authentication).getAuthorities();
 
+        Venue mockVenue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
         List<Performance> mockPerformances = List.of(
+
             Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
+                .name(PERFORMANCE_NAME.get(0))
+                .venue(mockVenue)
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
-                .description("Description 1")
+                .description(PERFORMANCE_DESCRIPTION.get(0))
                 .status(PerformanceStatus.ACTIVE)
                 .build(),
 
             Performance.builder()
-                .name("Performance 2")
-                .venue("Venue 2")
+                .name(PERFORMANCE_NAME.get(1))
+                .venue(mockVenue)
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
-                .description("Description 2")
-                .status(PerformanceStatus.DELETE)
+                .description(PERFORMANCE_DESCRIPTION.get(1))
+                .status(PerformanceStatus.ACTIVE)
                 .build()
         );
 
@@ -111,13 +127,20 @@ class PerformanceServiceTest {
 
         doReturn(grantedAuthorities).when(authentication).getAuthorities();
 
+        Venue mockVenue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
         List<Performance> mockPerformances = List.of(
+
             Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
+                .name(PERFORMANCE_NAME.get(0))
+                .venue(mockVenue)
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
-                .description("Description 1")
+                .description(PERFORMANCE_DESCRIPTION.get(0))
                 .status(PerformanceStatus.ACTIVE)
                 .build()
         );
@@ -144,14 +167,20 @@ class PerformanceServiceTest {
             new SimpleGrantedAuthority("ROLE_" + Role.ADMIN));
         doReturn(grantedAuthorities).when(authentication).getAuthorities();
 
+        Venue mockVenue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
         Performance mockPerformances =
             Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
+                .name(PERFORMANCE_NAME.get(0))
+                .venue(mockVenue)
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
-                .description("Description 1")
-                .status(PerformanceStatus.DELETE)
+                .description(PERFORMANCE_DESCRIPTION.get(0))
+                .status(PerformanceStatus.ACTIVE)
                 .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(mockPerformances));
@@ -175,15 +204,22 @@ class PerformanceServiceTest {
             new SimpleGrantedAuthority("ROLE_" + Role.USER));
         doReturn(grantedAuthorities).when(authentication).getAuthorities();
 
-        Performance mockPerformances =
+        Venue mockVenue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
+        List<Performance> mockPerformances = List.of(
             Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
+                .name(PERFORMANCE_NAME.get(0))
+                .venue(mockVenue)
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
-                .description("Description 1")
+                .description(PERFORMANCE_DESCRIPTION.get(0))
                 .status(PerformanceStatus.ACTIVE)
-                .build();
+                .build()
+        );
 
         when(performanceRepository.findByIdAndStatusNot(1L, PerformanceStatus.DELETE)).thenReturn(
             Optional.of(mockPerformances));
@@ -201,23 +237,29 @@ class PerformanceServiceTest {
     void 공연_등록_성공() {
         //given
         PerformanceGradeCreateRequestDto performanceGradeCreateRequestDto1 = PerformanceGradeCreateRequestDto.builder()
-            .name("S")
-            .price(10000.0)
-            .count(50)
+            .name(PERFORMANCE_GRADE_NAME.get(0))
+            .price(PERFORMANCE_GRADE_PRICE.get(0))
+            .totalSeats(PERFORMANCE_GRADE_TOTAL_SEATS.get(0))
             .build();
         PerformanceGradeCreateRequestDto performanceGradeCreateRequestDto2 = PerformanceGradeCreateRequestDto.builder()
-            .name("A")
-            .price(9000.0)
-            .count(100)
+            .name(PERFORMANCE_GRADE_NAME.get(1))
+            .price(PERFORMANCE_GRADE_PRICE.get(1))
+            .totalSeats(PERFORMANCE_GRADE_TOTAL_SEATS.get(1))
+            .build();
+
+        Venue venue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
             .build();
 
         PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
             .name("Performance 1")
-            .venue("Venue 1")
+            .venueId(1L)
             .startDate(LocalDateTime.now())
             .endDate(LocalDateTime.now())
             .description("A wonderful performance")
-            .gradeList(
+            .performanceGradeList(
                 List.of(performanceGradeCreateRequestDto1, performanceGradeCreateRequestDto2))
             .build();
 
@@ -242,38 +284,43 @@ class PerformanceServiceTest {
         String newName = "New Performance";
         String newVenue = "New Venue";
         String newDescription = "New Description";
-        Double newPrice = 2000.0;
 
-        Performance performance =
-            Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .description("Description 1")
-                .status(PerformanceStatus.ACTIVE)
-                .build();
+        Venue venue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
+        Performance performance = Performance.builder()
+            .name(PERFORMANCE_NAME.get(0))
+            .venue(venue)
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
+            .description(PERFORMANCE_DESCRIPTION.get(0))
+            .status(PerformanceStatus.ACTIVE)
+            .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
         PerformanceGradeUpdateRequestDto dto1 = PerformanceGradeUpdateRequestDto.builder()
-            .name("S")
-            .price(10000.0)
-            .count(50)
+            .name(PERFORMANCE_GRADE_NAME.get(0))
+            .price(PERFORMANCE_GRADE_PRICE.get(0))
+            .totalSeats(PERFORMANCE_GRADE_TOTAL_SEATS.get(0))
             .build();
+
         PerformanceGradeUpdateRequestDto dto2 = PerformanceGradeUpdateRequestDto.builder()
-            .name("A")
-            .price(9000.0)
-            .count(100)
+            .name(PERFORMANCE_GRADE_NAME.get(1))
+            .price(PERFORMANCE_GRADE_PRICE.get(1))
+            .totalSeats(PERFORMANCE_GRADE_TOTAL_SEATS.get(1))
             .build();
 
         PerformanceUpdateRequestDto performanceUpdateRequestDto = PerformanceUpdateRequestDto.builder()
             .name(newName)
-            .venue(newVenue)
+            .venueId(1L)
             .startDate(LocalDateTime.now())
             .endDate(LocalDateTime.now())
             .description(newDescription)
-            .gradeList(List.of(dto1, dto2))
+            .performanceGradeList(List.of(dto1, dto2))
             .build();
 
         //when
@@ -297,23 +344,24 @@ class PerformanceServiceTest {
         when(performanceRepository.findById(1L)).thenReturn(Optional.empty());
 
         PerformanceGradeUpdateRequestDto dto1 = PerformanceGradeUpdateRequestDto.builder()
-            .name("S")
-            .price(10000.0)
-            .count(50)
+            .name(PERFORMANCE_GRADE_NAME.get(0))
+            .price(PERFORMANCE_GRADE_PRICE.get(0))
+            .totalSeats(PERFORMANCE_GRADE_TOTAL_SEATS.get(0))
             .build();
+
         PerformanceGradeUpdateRequestDto dto2 = PerformanceGradeUpdateRequestDto.builder()
-            .name("A")
-            .price(9000.0)
-            .count(100)
+            .name(PERFORMANCE_GRADE_NAME.get(1))
+            .price(PERFORMANCE_GRADE_PRICE.get(1))
+            .totalSeats(PERFORMANCE_GRADE_TOTAL_SEATS.get(1))
             .build();
 
         PerformanceUpdateRequestDto performanceUpdateRequestDto = PerformanceUpdateRequestDto.builder()
             .name(newName)
-            .venue(newVenue)
+            .venueId(1L)
             .startDate(LocalDateTime.now())
             .endDate(LocalDateTime.now())
             .description(newDescription)
-            .gradeList(List.of(dto1, dto2))
+            .performanceGradeList(List.of(dto1, dto2))
             .build();
 
         //when
@@ -328,15 +376,20 @@ class PerformanceServiceTest {
     @Test
     void 공연_삭제_성공() {
         //given
-        Performance performance =
-            Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .description("Description 1")
-                .status(PerformanceStatus.ACTIVE)
-                .build();
+        Venue venue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
+        Performance performance = Performance.builder()
+            .name(PERFORMANCE_NAME.get(0))
+            .venue(venue)
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
+            .description(PERFORMANCE_DESCRIPTION.get(0))
+            .status(PerformanceStatus.ACTIVE)
+            .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
@@ -365,15 +418,20 @@ class PerformanceServiceTest {
     @Test
     void 공연_삭제_실패_이미_삭제됨() {
         //given
-        Performance performance =
-            Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .description("Description 1")
-                .status(PerformanceStatus.ACTIVE)
-                .build();
+        Venue venue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
+        Performance performance = Performance.builder()
+            .name(PERFORMANCE_NAME.get(0))
+            .venue(venue)
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
+            .description(PERFORMANCE_DESCRIPTION.get(0))
+            .status(PerformanceStatus.ACTIVE)
+            .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
         performance.delete();
@@ -390,15 +448,20 @@ class PerformanceServiceTest {
     @Test
     void 공연_취소_성공() {
         //given
-        Performance performance =
-            Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .description("Description 1")
-                .status(PerformanceStatus.ACTIVE)
-                .build();
+        Venue venue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
+        Performance performance = Performance.builder()
+            .name(PERFORMANCE_NAME.get(0))
+            .venue(venue)
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
+            .description(PERFORMANCE_DESCRIPTION.get(0))
+            .status(PerformanceStatus.ACTIVE)
+            .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
@@ -427,15 +490,20 @@ class PerformanceServiceTest {
     @Test
     void 공연_취소_실패_이미_취소됨() {
         //given
-        Performance performance =
-            Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .description("Description 1")
-                .status(PerformanceStatus.ACTIVE)
-                .build();
+        Venue venue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
+        Performance performance = Performance.builder()
+            .name(PERFORMANCE_NAME.get(0))
+            .venue(venue)
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
+            .description(PERFORMANCE_DESCRIPTION.get(0))
+            .status(PerformanceStatus.ACTIVE)
+            .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
         performance.cancel();
@@ -452,15 +520,20 @@ class PerformanceServiceTest {
     @Test
     void 공연_만료_성공() {
         //given
-        Performance performance =
-            Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .description("Description 1")
-                .status(PerformanceStatus.ACTIVE)
-                .build();
+        Venue venue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
+        Performance performance = Performance.builder()
+            .name(PERFORMANCE_NAME.get(0))
+            .venue(venue)
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
+            .description(PERFORMANCE_DESCRIPTION.get(0))
+            .status(PerformanceStatus.ACTIVE)
+            .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
@@ -489,15 +562,20 @@ class PerformanceServiceTest {
     @Test
     void 공연_만료_실패_이미_취소됨() {
         //given
-        Performance performance =
-            Performance.builder()
-                .name("Performance 1")
-                .venue("Venue 1")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
-                .description("Description 1")
-                .status(PerformanceStatus.ACTIVE)
-                .build();
+        Venue venue = Venue.builder()
+            .name(VENUE_NAME)
+            .description(VENUE_DESCRIPTION)
+            .totalSeats(VENUE_TOTAL_SEATS)
+            .build();
+
+        Performance performance = Performance.builder()
+            .name(PERFORMANCE_NAME.get(0))
+            .venue(venue)
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now())
+            .description(PERFORMANCE_DESCRIPTION.get(0))
+            .status(PerformanceStatus.ACTIVE)
+            .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
         performance.expire();
