@@ -52,6 +52,9 @@ class PerformanceControllerTest {
     @MockitoBean
     private PerformanceService performanceService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     void 공연_목록_조회_성공() throws Exception {
         // Given
@@ -87,8 +90,17 @@ class PerformanceControllerTest {
         mockMvc.perform(get("/performance/performances"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
-            .andExpect(jsonPath("$.data.performances").isArray())
-            .andExpect(jsonPath("$.data.performances[0].name").value("Performance 1"));
+            .andExpect(jsonPath("$.data.performances[0].name").value(PERFORMANCE_NAME.get(0)))
+            .andExpect(jsonPath("$.data.performances[0].venue.name").value(VENUE_NAME))
+            .andExpect(
+                jsonPath("$.data.performances[0].venue.description").value(VENUE_DESCRIPTION))
+            .andExpect(jsonPath("$.data.performances[0].venue.totalSeats").value(VENUE_TOTAL_SEATS))
+            .andExpect(
+                jsonPath("$.data.performances[0].description").value(
+                    PERFORMANCE_DESCRIPTION.get(0)))
+            .andExpect(
+                jsonPath("$.data.performances[0].status").value(
+                    PerformanceStatus.ACTIVE.toString()));
 
     }
 
@@ -118,16 +130,19 @@ class PerformanceControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value(200))
             .andExpect(jsonPath("$.data.performance.name").value(PERFORMANCE_NAME.get(0)))
-            .andExpect(jsonPath("$.data.performance.venue").value(venue))
+            .andExpect(jsonPath("$.data.performance.venue.name").value(VENUE_NAME))
+            .andExpect(jsonPath("$.data.performance.venue.description").value(VENUE_DESCRIPTION))
+            .andExpect(jsonPath("$.data.performance.venue.totalSeats").value(VENUE_TOTAL_SEATS))
             .andExpect(
                 jsonPath("$.data.performance.description").value(PERFORMANCE_DESCRIPTION.get(0)))
-            .andExpect(jsonPath("$.data.performance.status").value(PerformanceStatus.ACTIVE));
+            .andExpect(
+                jsonPath("$.data.performance.status").value(PerformanceStatus.ACTIVE.toString()));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void 공연_등록_성공() throws Exception {
-        // given
+       /* // given
         PerformanceGradeCreateRequestDto seat1 = new PerformanceGradeCreateRequestDto("S", 1000.0,
             50);
         PerformanceGradeCreateRequestDto seat2 = new PerformanceGradeCreateRequestDto("A", 500.0,
@@ -151,11 +166,11 @@ class PerformanceControllerTest {
             .build();
 
         PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
-            .name("Performance 1")
+            .name(PERFORMANCE_NAME.get(0))
             .venueId(1L)
             .startDate(LocalDateTime.now())
             .endDate(LocalDateTime.now())
-            .description("A wonderful performance")
+            .description(PERFORMANCE_DESCRIPTION.get(0))
             .performanceGradeList(
                 List.of(performanceGradeCreateRequestDto1, performanceGradeCreateRequestDto2))
             .build();
@@ -176,6 +191,48 @@ class PerformanceControllerTest {
 
         verify(performanceService, times(1)).createPerformance(
             any(PerformanceCreateRequestDto.class));
+*/
+
+        PerformanceGradeCreateRequestDto grade1 = PerformanceGradeCreateRequestDto.builder()
+            .name("S")
+            .price(1000.0)
+            .totalSeats(50)
+            .build();
+
+        PerformanceGradeCreateRequestDto grade2 = PerformanceGradeCreateRequestDto.builder()
+            .name("A")
+            .price(500.0)
+            .totalSeats(100)
+            .build();
+
+        // Given
+        PerformanceCreateRequestDto performanceCreateRequestDto =
+            PerformanceCreateRequestDto.builder()
+                .name("Sample Performance")
+                .venueId(1L)
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(1))
+                .description("Performance description")
+                .performanceGradeList(List.of(grade1, grade2))
+                .build();
+
+        doNothing().when(performanceService)
+            .createPerformance(any(PerformanceCreateRequestDto.class));
+
+        // When & Then
+        mockMvc.perform(post("/performance")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(performanceCreateRequestDto))
+                .with(csrf()))
+            .andExpect(status().isCreated())
+            .andExpect(
+                jsonPath("$.status").value(SuccessCode.PERFORMANCE_CREATE.getStatus().value()))
+            .andExpect(jsonPath("$.title").value(SuccessCode.PERFORMANCE_CREATE.getTitle()))
+            .andExpect(jsonPath("$.detail").value(SuccessCode.PERFORMANCE_CREATE.getDetail()));
+
+        verify(performanceService, times(1)).createPerformance(
+            any(PerformanceCreateRequestDto.class));
+
     }
 
 
@@ -272,4 +329,5 @@ class PerformanceControllerTest {
                 jsonPath("$.status").value(SuccessCode.PERFORMANCE_EXPIRE.getStatus().value()))
             .andExpect(jsonPath("$.detail").value(SuccessCode.PERFORMANCE_EXPIRE.getDetail()));
     }
+
 }
