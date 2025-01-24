@@ -10,5 +10,5 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
 
     List<Performance> findByStatusNot(PerformanceStatus performanceStatus);
 
-    Optional<Object> findByIdAndStatusNot(Long id, PerformanceStatus performanceStatus);
+    Optional<Performance> findByIdAndStatusNot(Long id, PerformanceStatus performanceStatus);
 }

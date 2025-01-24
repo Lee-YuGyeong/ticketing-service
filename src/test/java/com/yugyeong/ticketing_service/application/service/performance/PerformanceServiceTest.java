@@ -27,6 +27,7 @@ import com.yugyeong.ticketing_service.domain.entity.Performance;
 import com.yugyeong.ticketing_service.domain.entity.Venue;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
+import com.yugyeong.ticketing_service.domain.repository.VenueRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeUpdateRequestDto;
@@ -58,6 +59,9 @@ class PerformanceServiceTest {
     @Mock
     private SeatRepository seatRepository;
 
+    @Mock
+    private VenueRepository venueRepository;
+
     @InjectMocks
     private PerformanceService performanceService;
 
@@ -85,7 +89,6 @@ class PerformanceServiceTest {
             .build();
 
         List<Performance> mockPerformances = List.of(
-
             Performance.builder()
                 .name(PERFORMANCE_NAME.get(0))
                 .venue(mockVenue)
@@ -101,7 +104,7 @@ class PerformanceServiceTest {
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
                 .description(PERFORMANCE_DESCRIPTION.get(1))
-                .status(PerformanceStatus.ACTIVE)
+                .status(PerformanceStatus.DELETE)
                 .build()
         );
 
@@ -113,7 +116,7 @@ class PerformanceServiceTest {
         // then
         assertThat(performances).hasSize(2);
         assertThat(performances).extracting("name")
-            .containsExactly("Performance 1", "Performance 2");
+            .containsExactly(PERFORMANCE_NAME.get(0), PERFORMANCE_NAME.get(1));
     }
 
     @Test
@@ -134,7 +137,6 @@ class PerformanceServiceTest {
             .build();
 
         List<Performance> mockPerformances = List.of(
-
             Performance.builder()
                 .name(PERFORMANCE_NAME.get(0))
                 .venue(mockVenue)
@@ -154,7 +156,7 @@ class PerformanceServiceTest {
         // then
         assertThat(performances).hasSize(1);
         assertThat(performances).extracting("name")
-            .containsExactly("Performance 1");
+            .containsExactly(PERFORMANCE_NAME.get(0));
     }
 
     @Test
@@ -180,7 +182,7 @@ class PerformanceServiceTest {
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
                 .description(PERFORMANCE_DESCRIPTION.get(0))
-                .status(PerformanceStatus.ACTIVE)
+                .status(PerformanceStatus.DELETE)
                 .build();
 
         when(performanceRepository.findById(1L)).thenReturn(Optional.of(mockPerformances));
@@ -189,8 +191,8 @@ class PerformanceServiceTest {
         PerformanceResponseDto performances = performanceService.getPerformance(1L);
 
         // then
-        assertThat(performances.getName()).isEqualTo("Performance 1");
-        assertThat(performances.getVenue()).isEqualTo("Venue 1");
+        assertThat(performances.getName()).isEqualTo(PERFORMANCE_NAME.get(0));
+        assertThat(performances.getVenue()).isEqualTo(mockVenue);
         assertThat(performances.getStatus()).isEqualTo(PerformanceStatus.DELETE);
     }
 
@@ -210,7 +212,7 @@ class PerformanceServiceTest {
             .totalSeats(VENUE_TOTAL_SEATS)
             .build();
 
-        List<Performance> mockPerformances = List.of(
+        Performance mockPerformance =
             Performance.builder()
                 .name(PERFORMANCE_NAME.get(0))
                 .venue(mockVenue)
@@ -218,18 +220,17 @@ class PerformanceServiceTest {
                 .endDate(LocalDateTime.now())
                 .description(PERFORMANCE_DESCRIPTION.get(0))
                 .status(PerformanceStatus.ACTIVE)
-                .build()
-        );
+                .build();
 
         when(performanceRepository.findByIdAndStatusNot(1L, PerformanceStatus.DELETE)).thenReturn(
-            Optional.of(mockPerformances));
+            Optional.of(mockPerformance));
 
         // when
         PerformanceResponseDto performances = performanceService.getPerformance(1L);
 
         // then
-        assertThat(performances.getName()).isEqualTo("Performance 1");
-        assertThat(performances.getVenue()).isEqualTo("Venue 1");
+        assertThat(performances.getName()).isEqualTo(PERFORMANCE_NAME.get(0));
+        assertThat(performances.getVenue()).isEqualTo(mockVenue);
         assertThat(performances.getStatus()).isEqualTo(PerformanceStatus.ACTIVE);
     }
 
@@ -254,14 +255,16 @@ class PerformanceServiceTest {
             .build();
 
         PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
-            .name("Performance 1")
+            .name(PERFORMANCE_NAME.get(0))
             .venueId(1L)
             .startDate(LocalDateTime.now())
             .endDate(LocalDateTime.now())
-            .description("A wonderful performance")
+            .description(PERFORMANCE_DESCRIPTION.get(0))
             .performanceGradeList(
                 List.of(performanceGradeCreateRequestDto1, performanceGradeCreateRequestDto2))
             .build();
+
+        when(venueRepository.findByIdAndStatus(1L, true)).thenReturn(Optional.of(venue));
 
         //when
         performanceService.createPerformance(performanceCreateRequestDto);
@@ -270,9 +273,9 @@ class PerformanceServiceTest {
         verify(performanceRepository, times(1))
             .save(argThat(performance -> {
                 assertAll("Performance",
-                    () -> assertEquals("Performance 1", performance.getName()),
-                    () -> assertEquals("Venue 1", performance.getVenue()),
-                    () -> assertEquals("A wonderful performance", performance.getDescription())
+                    () -> assertEquals(PERFORMANCE_NAME.get(0), performance.getName()),
+                    () -> assertEquals(venue, performance.getVenue()),
+                    () -> assertEquals(PERFORMANCE_DESCRIPTION.get(0), performance.getDescription())
                 );
                 return true;
             }));
@@ -282,7 +285,6 @@ class PerformanceServiceTest {
     void 공연_수정_성공() {
         //given
         String newName = "New Performance";
-        String newVenue = "New Venue";
         String newDescription = "New Description";
 
         Venue venue = Venue.builder()
@@ -299,8 +301,6 @@ class PerformanceServiceTest {
             .description(PERFORMANCE_DESCRIPTION.get(0))
             .status(PerformanceStatus.ACTIVE)
             .build();
-
-        when(performanceRepository.findById(1L)).thenReturn(Optional.of(performance));
 
         PerformanceGradeUpdateRequestDto dto1 = PerformanceGradeUpdateRequestDto.builder()
             .name(PERFORMANCE_GRADE_NAME.get(0))
@@ -323,25 +323,26 @@ class PerformanceServiceTest {
             .performanceGradeList(List.of(dto1, dto2))
             .build();
 
+        when(performanceRepository.findByIdAndStatusNot(1L, PerformanceStatus.DELETE)).thenReturn(
+            Optional.of(performance));
+        when(venueRepository.findByIdAndStatus(1L, true)).thenReturn(Optional.of(venue));
+
         //when
         performanceService.updatePerformance(1L, performanceUpdateRequestDto);
 
         //then
         assertThat(performance.getName()).isEqualTo(newName);
-        assertThat(performance.getVenue()).isEqualTo(newVenue);
         assertThat(performance.getDescription()).isEqualTo(newDescription);
-        verify(performanceRepository, times(1)).findById(1L);
     }
 
     @Test
     void 공연_수정_실패() {
         //given
         String newName = "New Performance";
-        String newVenue = "New Venue";
         String newDescription = "New Description";
-        Double newPrice = 2000.0;
 
-        when(performanceRepository.findById(1L)).thenReturn(Optional.empty());
+        when(performanceRepository.findByIdAndStatusNot(1L,
+            PerformanceStatus.DELETE)).thenReturn(Optional.empty());
 
         PerformanceGradeUpdateRequestDto dto1 = PerformanceGradeUpdateRequestDto.builder()
             .name(PERFORMANCE_GRADE_NAME.get(0))

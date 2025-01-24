@@ -142,12 +142,7 @@ class PerformanceControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void 공연_등록_성공() throws Exception {
-       /* // given
-        PerformanceGradeCreateRequestDto seat1 = new PerformanceGradeCreateRequestDto("S", 1000.0,
-            50);
-        PerformanceGradeCreateRequestDto seat2 = new PerformanceGradeCreateRequestDto("A", 500.0,
-            100);
-
+        // given
         PerformanceGradeCreateRequestDto performanceGradeCreateRequestDto1 = PerformanceGradeCreateRequestDto.builder()
             .name(PERFORMANCE_GRADE_NAME.get(0))
             .price(PERFORMANCE_GRADE_PRICE.get(0))
@@ -157,12 +152,6 @@ class PerformanceControllerTest {
             .name(PERFORMANCE_GRADE_NAME.get(1))
             .price(PERFORMANCE_GRADE_PRICE.get(1))
             .totalSeats(PERFORMANCE_GRADE_TOTAL_SEATS.get(1))
-            .build();
-
-        Venue venue = Venue.builder()
-            .name(VENUE_NAME)
-            .description(VENUE_DESCRIPTION)
-            .totalSeats(VENUE_TOTAL_SEATS)
             .build();
 
         PerformanceCreateRequestDto performanceCreateRequestDto = PerformanceCreateRequestDto.builder()
@@ -179,47 +168,6 @@ class PerformanceControllerTest {
             .createPerformance(any(PerformanceCreateRequestDto.class));
 
         // when & then
-        mockMvc.perform(post("/performance")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(performanceCreateRequestDto))
-                .with(csrf()))
-            .andExpect(status().isCreated())
-            .andExpect(
-                jsonPath("$.status").value(SuccessCode.PERFORMANCE_CREATE.getStatus().value()))
-            .andExpect(jsonPath("$.title").value(SuccessCode.PERFORMANCE_CREATE.getTitle()))
-            .andExpect(jsonPath("$.detail").value(SuccessCode.PERFORMANCE_CREATE.getDetail()));
-
-        verify(performanceService, times(1)).createPerformance(
-            any(PerformanceCreateRequestDto.class));
-*/
-
-        PerformanceGradeCreateRequestDto grade1 = PerformanceGradeCreateRequestDto.builder()
-            .name("S")
-            .price(1000.0)
-            .totalSeats(50)
-            .build();
-
-        PerformanceGradeCreateRequestDto grade2 = PerformanceGradeCreateRequestDto.builder()
-            .name("A")
-            .price(500.0)
-            .totalSeats(100)
-            .build();
-
-        // Given
-        PerformanceCreateRequestDto performanceCreateRequestDto =
-            PerformanceCreateRequestDto.builder()
-                .name("Sample Performance")
-                .venueId(1L)
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(1))
-                .description("Performance description")
-                .performanceGradeList(List.of(grade1, grade2))
-                .build();
-
-        doNothing().when(performanceService)
-            .createPerformance(any(PerformanceCreateRequestDto.class));
-
-        // When & Then
         mockMvc.perform(post("/performance")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(performanceCreateRequestDto))
@@ -252,17 +200,14 @@ class PerformanceControllerTest {
             .totalSeats(PERFORMANCE_GRADE_TOTAL_SEATS.get(1))
             .build();
 
-        String newName = "New Performance";
-        String newVenue = "New Venue";
-        String newDescription = "New Description";
-
         PerformanceUpdateRequestDto updateRequestDto = PerformanceUpdateRequestDto.builder()
-            .name(newName)
+            .name(PERFORMANCE_NAME.get(0))
             .venueId(1L)
             .startDate(LocalDateTime.now())
             .endDate(LocalDateTime.now())
-            .description(newDescription)
-            .performanceGradeList(List.of(dto1, dto2))
+            .description(PERFORMANCE_DESCRIPTION.get(0))
+            .performanceGradeList(
+                List.of(dto1, dto2))
             .build();
 
         doNothing().when(performanceService).updatePerformance(1L, updateRequestDto);

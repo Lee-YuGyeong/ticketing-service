@@ -84,7 +84,7 @@ public class PerformanceService {
             performance = performanceRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
         } else {
-            performance = (Performance) performanceRepository.findByIdAndStatusNot(id,
+            performance = performanceRepository.findByIdAndStatusNot(id,
                     PerformanceStatus.DELETE)
                 .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
         }
@@ -156,8 +156,8 @@ public class PerformanceService {
     public void updatePerformance(Long id,
         PerformanceUpdateRequestDto performanceUpdateRequestDto) {
 
-        // 공연장 유효성 확인 -> and status 수정하기
-        Performance performance = (Performance) performanceRepository.findByIdAndStatusNot(id,
+        // 공연장 유효성 확인
+        Performance performance = performanceRepository.findByIdAndStatusNot(id,
                 PerformanceStatus.DELETE)
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
