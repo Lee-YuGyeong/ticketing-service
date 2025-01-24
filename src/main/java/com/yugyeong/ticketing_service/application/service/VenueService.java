@@ -59,7 +59,7 @@ public class VenueService {
         if (isAdmin) {
             venues = venueRepository.findAll();
         } else {
-            venues = venueRepository.findByStatus(false);
+            venues = venueRepository.findByStatus(true);
         }
 
         return venues.stream()
@@ -86,7 +86,7 @@ public class VenueService {
             venue = venueRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.VENUE_NOT_FOUND));
         } else {
-            venue = venueRepository.findByIdAndStatus(id, false)
+            venue = venueRepository.findByIdAndStatus(id, true)
                 .orElseThrow(() -> new CustomException(ErrorCode.VENUE_NOT_FOUND));
         }
 

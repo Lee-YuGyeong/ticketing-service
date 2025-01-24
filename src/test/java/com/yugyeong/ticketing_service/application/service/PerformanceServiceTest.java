@@ -25,7 +25,6 @@ import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
 import com.yugyeong.ticketing_service.domain.entity.Venue;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
-import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
 import com.yugyeong.ticketing_service.domain.repository.VenueRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeCreateRequestDto;
@@ -54,9 +53,6 @@ class PerformanceServiceTest {
 
     @Mock
     private PerformanceRepository performanceRepository;
-
-    @Mock
-    private SeatRepository seatRepository;
 
     @Mock
     private VenueRepository venueRepository;
