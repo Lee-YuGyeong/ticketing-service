@@ -1,4 +1,4 @@
-package com.yugyeong.ticketing_service.presentation.controller.performance;
+package com.yugyeong.ticketing_service.presentation.controller;
 
 import static com.yugyeong.ticketing_service.testutil.TestConstants.PERFORMANCE_DESCRIPTION;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.PERFORMANCE_GRADE_NAME;
@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yugyeong.ticketing_service.application.service.PerformanceService;
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.entity.Venue;
-import com.yugyeong.ticketing_service.presentation.controller.PerformanceController;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceGradeUpdateRequestDto;

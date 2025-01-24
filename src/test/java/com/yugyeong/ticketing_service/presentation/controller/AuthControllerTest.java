@@ -1,4 +1,4 @@
-package com.yugyeong.ticketing_service.presentation.controller.auth;
+package com.yugyeong.ticketing_service.presentation.controller;
 
 import static com.yugyeong.ticketing_service.testutil.TestConstants.ROLE_USER;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.VALID_EMAIL;
@@ -15,7 +15,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yugyeong.ticketing_service.application.service.PrincipalDetailsService;
 import com.yugyeong.ticketing_service.application.service.UserService;
-import com.yugyeong.ticketing_service.presentation.controller.AuthController;
 import com.yugyeong.ticketing_service.presentation.dto.user.UserJoinRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;

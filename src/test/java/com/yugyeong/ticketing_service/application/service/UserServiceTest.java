@@ -1,4 +1,4 @@
-package com.yugyeong.ticketing_service.application.service.user;
+package com.yugyeong.ticketing_service.application.service;
 
 import static com.yugyeong.ticketing_service.testutil.TestConstants.ENCODED_PASSWORD;
 import static com.yugyeong.ticketing_service.testutil.TestConstants.ROLE_USER;
@@ -17,8 +17,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.yugyeong.ticketing_service.application.service.PrincipalDetailsService;
-import com.yugyeong.ticketing_service.application.service.UserService;
 import com.yugyeong.ticketing_service.domain.Role;
 import com.yugyeong.ticketing_service.domain.entity.User;
 import com.yugyeong.ticketing_service.domain.repository.UserRepository;
