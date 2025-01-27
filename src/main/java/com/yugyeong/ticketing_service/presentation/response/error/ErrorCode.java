@@ -40,7 +40,11 @@ public enum ErrorCode {
         "좌석이 이미 예매되었습니다."),
     VENUE_NOT_FOUND("/errors/venue-not-found", "VENUE NOT FOUND",
         HttpStatus.NOT_FOUND,
-        "공연장이 존재하지 않습니다.");
+        "공연장이 존재하지 않습니다."),
+    PERFORMANCE_SEAT_ALREADY_RESERVE("/errors/performance-seat-already-reserve",
+        "PERFORMANCE SEAT ALREADY RESERVE",
+        HttpStatus.CONFLICT,
+        "이미 좌석이 예약되었습니다.");
 
 
     private final String type;

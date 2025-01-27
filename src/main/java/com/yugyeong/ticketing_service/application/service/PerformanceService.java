@@ -6,7 +6,7 @@ import com.yugyeong.ticketing_service.domain.entity.PerformanceGrade;
 import com.yugyeong.ticketing_service.domain.entity.PerformanceSeat;
 import com.yugyeong.ticketing_service.domain.entity.Venue;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
-import com.yugyeong.ticketing_service.domain.repository.SeatRepository;
+import com.yugyeong.ticketing_service.domain.repository.PerformanceSeatRepository;
 import com.yugyeong.ticketing_service.domain.repository.VenueRepository;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.dto.performance.PerformanceResponseDto;
@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerformanceService {
 
     private final PerformanceRepository performanceRepository;
-    private final SeatRepository seatRepository;
+    private final PerformanceSeatRepository performanceSeatRepository;
     private final VenueRepository venueRepository;
 
     /**
