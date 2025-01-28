@@ -41,9 +41,9 @@ public class ReservationController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(SuccessResponse.builder()
-                .title(SuccessCode.PERFORMANCE_CREATE.getTitle())
-                .status(SuccessCode.PERFORMANCE_CREATE.getStatus().value())
-                .detail(SuccessCode.PERFORMANCE_CREATE.getDetail())
+                .title(SuccessCode.RESERVATION_CREATE.getTitle())
+                .status(SuccessCode.RESERVATION_CREATE.getStatus().value())
+                .detail(SuccessCode.RESERVATION_CREATE.getDetail())
                 .build());
 
     }

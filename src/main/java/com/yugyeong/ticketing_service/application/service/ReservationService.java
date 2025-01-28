@@ -38,8 +38,9 @@ public class ReservationService {
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
         // 좌석 조회
-        PerformanceSeat performanceSeat = performanceSeatRepository.findByNumberAndIsReserved(
-                reservationCreateRequestDto.getPerformanceSeatNumber(), false)
+        PerformanceSeat performanceSeat = performanceSeatRepository.findByNumberAndPerformanceIdAndIsReserved(
+                reservationCreateRequestDto.getPerformanceSeatNumber(),
+                reservationCreateRequestDto.getPerformanceId(), false)
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_SEAT_ALREADY_RESERVE));
 
         // 로그인 유저 조회

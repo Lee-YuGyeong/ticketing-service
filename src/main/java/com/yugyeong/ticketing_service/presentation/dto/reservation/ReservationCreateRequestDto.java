@@ -26,9 +26,4 @@ public class ReservationCreateRequestDto {
     @Schema(description = "공연 자리", example = "1")
     @NotNull(message = "공연 자리는 필수 값 입니다.")
     private int performanceSeatNumber;
-
-    @Schema(description = "예매자", example = "1")
-    @NotNull(message = "예매자는 필수 값 입니다.")
-    private Long userId;
-
 }
