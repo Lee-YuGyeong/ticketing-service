@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/reservation")
 public class ReservationController {
 
-    private ReservationService reservationService;
+    private final ReservationService reservationService;
 
     @Operation(
         summary = "공연 예약",
@@ -34,7 +34,7 @@ public class ReservationController {
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = SuccessResponse.class)))
     })
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<SuccessResponse> createReservation(
         @RequestBody @Valid ReservationCreateRequestDto reservationCreateRequestDto) {
         reservationService.createReservation(reservationCreateRequestDto);

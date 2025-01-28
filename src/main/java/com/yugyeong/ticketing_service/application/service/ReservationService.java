@@ -10,10 +10,13 @@ import com.yugyeong.ticketing_service.domain.repository.PerformanceRepository;
 import com.yugyeong.ticketing_service.domain.repository.PerformanceSeatRepository;
 import com.yugyeong.ticketing_service.domain.repository.ReservationRepository;
 import com.yugyeong.ticketing_service.domain.repository.UserRepository;
+import com.yugyeong.ticketing_service.infrastructure.config.security.PrincipalDetails;
 import com.yugyeong.ticketing_service.presentation.dto.reservation.ReservationCreateRequestDto;
 import com.yugyeong.ticketing_service.presentation.exception.CustomException;
 import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +38,15 @@ public class ReservationService {
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_NOT_FOUND));
 
         // 좌석 조회
-        PerformanceSeat performanceSeat = performanceSeatRepository.findByIdAndFalse(
-                reservationCreateRequestDto.getPerformanceSeatId())
+        PerformanceSeat performanceSeat = performanceSeatRepository.findByNumberAndIsReserved(
+                reservationCreateRequestDto.getPerformanceSeatNumber(), false)
             .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_SEAT_ALREADY_RESERVE));
 
-        // 유저 조회
-        User user = userRepository.findByIdAndStatus(reservationCreateRequestDto.getUserId(), true)
+        // 로그인 유저 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = ((PrincipalDetails) authentication.getPrincipal()).getEmail();
+
+        User user = userRepository.findByEmailAndStatus(email, true)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Reservation reservation = Reservation.builder()

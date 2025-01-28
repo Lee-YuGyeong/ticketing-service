@@ -45,6 +45,9 @@ public class Performance extends BaseEntity {
     @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PerformanceGrade> performanceGradeList = new ArrayList<>(); // 좌석 등급
 
+    @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PerformanceSeat> performanceSeatList = new ArrayList<>(); // 좌석 번호
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
     private Venue venue;
@@ -148,5 +151,10 @@ public class Performance extends BaseEntity {
     public void addPerformanceGrade(PerformanceGrade performanceGrade) {
         performanceGradeList.add(performanceGrade);
         performanceGrade.changePerformance(this);
+    }
+
+    public void addPerformanceSeat(PerformanceSeat performanceSeat) {
+        performanceSeatList.add(performanceSeat);
+        performanceSeat.changePerformance(this);
     }
 }

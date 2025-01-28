@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PerformanceSeatRepository extends JpaRepository<PerformanceSeat, Long> {
 
-    Optional<PerformanceSeat> findByIdAndFalse(Long performanceSeatId);
+    Optional<PerformanceSeat> findByNumberAndIsReserved(int performanceSeatNumber,
+        Boolean isReserved);
 
 }

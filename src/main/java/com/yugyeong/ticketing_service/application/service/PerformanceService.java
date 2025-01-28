@@ -139,6 +139,7 @@ public class PerformanceService {
                     .performanceGrade(performanceGrade)
                     .build();
                 performanceGrade.addPerformanceSeat(performanceSeat);
+                performance.addPerformanceSeat(performanceSeat);
             }
             performance.addPerformanceGrade(performanceGrade);
             index = index + performanceGrade.getTotalSeats();
@@ -197,6 +198,7 @@ public class PerformanceService {
                     .performanceGrade(performanceGrade)
                     .build();
                 performanceGrade.addPerformanceSeat(performanceSeat);
+                performance.addPerformanceSeat(performanceSeat);
             }
             performance.addPerformanceGrade(performanceGrade);
             index = index + performanceGrade.getTotalSeats();

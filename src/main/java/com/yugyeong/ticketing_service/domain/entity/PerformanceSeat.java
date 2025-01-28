@@ -31,6 +31,10 @@ public class PerformanceSeat extends BaseEntity {
     @JoinColumn(name = "grade_id")
     private PerformanceGrade performanceGrade; // 좌석 등급
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performance_id")
+    private Performance performance; // 공연
+
     @OneToOne(mappedBy = "performanceSeat", cascade = CascadeType.ALL, orphanRemoval = true)
     private Reservation reservation;
 
@@ -45,5 +49,9 @@ public class PerformanceSeat extends BaseEntity {
 
     public void changePerformanceGrade(PerformanceGrade performanceGrade) {
         this.performanceGrade = performanceGrade;
+    }
+
+    public void changePerformance(Performance performance) {
+        this.performance = performance;
     }
 }
