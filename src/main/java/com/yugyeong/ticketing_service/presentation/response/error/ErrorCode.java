@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-    CLIENT_SYSTEM_NOT_FOUND("/errors/not-found", "DATA NOT FOUND", HttpStatus.NOT_FOUND,
-        "존재하지 않는 클라이언트 시스템 입니다."),
+    INVALID_REQUEST("/errors/not-found", "DATA NOT FOUND", HttpStatus.CONFLICT,
+        "유효하지 않은 데이터입니다."),
     JWT_NOT_VALID("/errors/authentication", "AUTH NOT VALID", HttpStatus.UNAUTHORIZED,
         "JWT 가 유효하지 않습니다."),
     ID_PASSWORD_NOT_MATCHED("/errors/authentication", "AUTH NOT VALID", HttpStatus.UNAUTHORIZED,
