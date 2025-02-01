@@ -126,6 +126,6 @@ public class ReservationService {
     private boolean isManager(Authentication authentication) {
         return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER"));
     }
-    
 
+    
 }
