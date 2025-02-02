@@ -44,7 +44,11 @@ public enum ErrorCode {
     PERFORMANCE_SEAT_ALREADY_RESERVE("/errors/performance-seat-already-reserve",
         "PERFORMANCE SEAT ALREADY RESERVE",
         HttpStatus.CONFLICT,
-        "이미 좌석이 예약되었습니다.");
+        "이미 좌석이 예약되었습니다."),
+    PERFORMANCE_SEAT_FULL("/errors/performance-seat-full",
+        "PERFORMANCE SEAT FULL",
+        HttpStatus.CONFLICT,
+        "남은 좌석이 없습니다.");
 
 
     private final String type;

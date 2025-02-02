@@ -127,5 +127,5 @@ public class ReservationService {
         return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER"));
     }
 
-    
+
 }

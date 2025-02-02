@@ -1,5 +1,7 @@
 package com.yugyeong.ticketing_service.domain.entity;
 
+import com.yugyeong.ticketing_service.presentation.exception.CustomException;
+import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,7 +33,7 @@ public class PerformanceGrade extends BaseEntity {
 
     private int totalSeats; // 등급 별 총 좌석 개수
 
-    private int remainSeats; // 남은 좌석 개수
+    private int remainSeats; // 등급 별 남은 좌석 개수
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
@@ -57,5 +59,13 @@ public class PerformanceGrade extends BaseEntity {
     public void addPerformanceSeat(PerformanceSeat performanceSeat) {
         performanceSeatList.add(performanceSeat);
         performanceSeat.changePerformanceGrade(this);
+    }
+
+    public void reservePerformance() {
+        if (remainSeats < 1) {
+            throw new CustomException(ErrorCode.PERFORMANCE_SEAT_FULL);
+        }
+
+        remainSeats -= 1;
     }
 }
