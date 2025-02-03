@@ -79,32 +79,7 @@ public class Performance extends BaseEntity {
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
         }
-
-        // 먼저 연결된 좌석들을 제거 (Seat가 Grade를 참조하므로 Seat를 먼저 제거)
-        //this.performanceSeatList.clear();
-
-        // 기존 등급들을 모두 제거
-        //this.performanceGradeList.clear();
-
-        // 새로운 등급 연관관계 설정 및 좌석 생성
-/*        for (PerformanceGrade performanceGrade : performanceGradeList) {
-            performanceGrade.changePerformance(this);
-            this.performanceGradeList.add(performanceGrade);
-        }*/
-
-        // 좌석 생성은 grade 설정이 완료된 후에 수행
-        /*for (PerformanceGrade performanceGrade : this.performanceGradeList) {
-            for (int i = 1; i <= performanceGrade.getTotalSeats(); i++) {
-                PerformanceSeat performanceSeat = PerformanceSeat.builder()
-                    .number(i)
-                    //.grade(performanceGrade)
-                    // .performance(this)
-                    .isReserved(false)
-                    .build();
-                // this.performanceSeatList.add(performanceSeat);
-            }
-        }*/
-
+        
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
