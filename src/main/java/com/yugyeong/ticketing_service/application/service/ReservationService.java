@@ -2,6 +2,7 @@ package com.yugyeong.ticketing_service.application.service;
 
 import com.yugyeong.ticketing_service.domain.PerformanceStatus;
 import com.yugyeong.ticketing_service.domain.entity.Performance;
+import com.yugyeong.ticketing_service.domain.entity.PerformanceGrade;
 import com.yugyeong.ticketing_service.domain.entity.PerformanceSeat;
 import com.yugyeong.ticketing_service.domain.entity.Reservation;
 import com.yugyeong.ticketing_service.domain.entity.ReservationStatus;
@@ -55,6 +56,8 @@ public class ReservationService {
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // TODO: 티켓 개수 줄이기
+        List<PerformanceGrade> performanceGradeList = performance.getPerformanceGradeList();
+        performanceGrade.reservePerformance();
 
         Reservation reservation = Reservation.builder()
             .price(reservationCreateRequestDto.getPrice())
