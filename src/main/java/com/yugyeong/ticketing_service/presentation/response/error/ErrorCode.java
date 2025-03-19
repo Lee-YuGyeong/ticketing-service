@@ -48,7 +48,15 @@ public enum ErrorCode {
     PERFORMANCE_SEAT_FULL("/errors/performance-seat-full",
         "PERFORMANCE SEAT FULL",
         HttpStatus.CONFLICT,
-        "남은 좌석이 없습니다.");
+        "남은 좌석이 없습니다."),
+    PERFORMANCE_GRADE_NOT_FOUND("/errors/performance-grade-not-found",
+        "PERFORMANCE GRADE NOT FOUND",
+        HttpStatus.CONFLICT,
+        "좌석 등급이 없습니다."),
+    UNAUTHORIZED_ACCESS("/errors/unauthorized-access",
+        "UNAUTHORIZED ACCESS",
+        HttpStatus.CONFLICT,
+        "권한이 없습니다.");
 
 
     private final String type;

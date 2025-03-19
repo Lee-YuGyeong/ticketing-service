@@ -1,6 +1,8 @@
 package com.yugyeong.ticketing_service.domain.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +26,7 @@ public class Reservation extends BaseEntity {
 
     private Double price;
 
+    @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)

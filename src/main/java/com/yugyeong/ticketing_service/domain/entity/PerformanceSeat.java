@@ -54,4 +54,16 @@ public class PerformanceSeat extends BaseEntity {
     public void changePerformance(Performance performance) {
         this.performance = performance;
     }
+
+    public String getGrade() {
+        return performanceGrade != null ? performanceGrade.getName() : null;
+    }
+
+    public Boolean getReserved() {
+        return isReserved;
+    }
+
+    public void setReserved(boolean reserved) {
+        this.isReserved = reserved;
+    }
 }
