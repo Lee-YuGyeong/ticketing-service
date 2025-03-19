@@ -158,7 +158,6 @@ class ReservationServiceTest {
 
         User mockUser = User.builder()
             .email("user@example.com")
-
             .build();
         ReflectionTestUtils.setField(mockUser, "id", 100L);
 
