@@ -79,7 +79,7 @@ public class Performance extends BaseEntity {
         if (status.equals(PerformanceStatus.DELETE)) {
             throw new CustomException(ErrorCode.PERFORMANCE_ALREADY_DELETED);
         }
-        
+
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;

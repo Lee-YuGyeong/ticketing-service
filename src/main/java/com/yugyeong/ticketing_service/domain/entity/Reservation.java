@@ -32,7 +32,7 @@ public class Reservation extends BaseEntity {
     private ReservationStatus reservationStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "performance")
+    @JoinColumn(name = "performance_id")
     private Performance performance;
 
     @OneToOne(fetch = FetchType.LAZY)

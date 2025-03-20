@@ -100,9 +100,9 @@ public class ReservationService {
         return reservations.stream().map(reservation -> ReservationResponseDto.builder()
             .price(reservation.getPrice())
             .reservationStatus(reservation.getReservationStatus())
-            .performance(reservation.getPerformance())
-            .performanceSeat(reservation.getPerformanceSeat())
-            .user(reservation.getUser())
+            .performanceId(reservation.getPerformance().getId())
+            .seatNumberId(reservation.getPerformanceSeat().getId())
+            .userEmail(reservation.getUser().getEmail())
             .build()).collect(Collectors.toList());
     }
 
@@ -133,11 +133,6 @@ public class ReservationService {
         if (managedPerformanceIds == null) {
             managedPerformanceIds = List.of();  // null 방지를 위해 빈 리스트로 초기화
         }
-
-        // 🔍 디버깅 로그 추가 (테스트 시 확인 가능)
-        System.out.println("🔍 매니저 이메일: " + email);
-        System.out.println("🎭 매니저가 관리하는 공연 ID 목록: " + managedPerformanceIds);
-        System.out.println("🎟 요청된 공연 ID: " + performanceId);
 
         // 매니저가 만든 공연이 아닌 경우 예외 발생
         if (!managedPerformanceIds.contains(performanceId)) {

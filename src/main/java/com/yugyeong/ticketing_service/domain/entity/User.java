@@ -40,7 +40,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservationList;
-    
+
     @Builder
     public User(String email, String username, String password, Role role) {
         this.email = email;

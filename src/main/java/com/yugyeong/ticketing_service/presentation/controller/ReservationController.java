@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,7 +69,7 @@ public class ReservationController {
     public ResponseEntity<SuccessResponse> getReservations(@PathVariable("id") Long id) {
         List<ReservationResponseDto> reservations = reservationService.getReservations(id);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
             .body(SuccessResponse.builder()
                 .title(SuccessCode.RESERVATION_FOUND.getTitle())
                 .status(SuccessCode.RESERVATION_FOUND.getStatus().value())
@@ -76,6 +77,28 @@ public class ReservationController {
                 .data(Map.of(
                     "reservations", reservations
                 ))
+                .build());
+
+    }
+
+    @Operation(
+        summary = "예약 취소",
+        description = "예약을 취소합니다."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "예약 취소 성공",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SuccessResponse.class)))
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponse> cancelReservation(@PathVariable("id") Long id) {
+        reservationService.cancelReservation(id);
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(SuccessResponse.builder()
+                .title(SuccessCode.RESERVATION_CANCEL.getTitle())
+                .status(SuccessCode.RESERVATION_CANCEL.getStatus().value())
+                .detail(SuccessCode.RESERVATION_CANCEL.getDetail())
                 .build());
 
     }

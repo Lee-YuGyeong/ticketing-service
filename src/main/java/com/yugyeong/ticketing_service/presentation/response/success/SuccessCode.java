@@ -24,7 +24,8 @@ public enum SuccessCode {
     VENUE_FOUND("공연장 조회 성공", HttpStatus.OK, "공연장 조회가 성공적으로 완료되었습니다."),
     VENUE_DELETE("공연장 삭제 성공", HttpStatus.OK, "공연장 삭제가 성공적으로 완료되었습니다."),
     RESERVATION_CREATE("공연 예약 성공", HttpStatus.OK, "공연 예약이 성공적으로 완료되었습니다."),
-    RESERVATION_FOUND("예약 조회 성공", HttpStatus.OK, "예약 조회가 성공적으로 완료되었습니다.");
+    RESERVATION_FOUND("예약 조회 성공", HttpStatus.OK, "예약 조회가 성공적으로 완료되었습니다."),
+    RESERVATION_CANCEL("예약 취소 성공", HttpStatus.OK, "예약 취소가 성공적으로 완료되었습니다.");
 
 
     private final String title;
