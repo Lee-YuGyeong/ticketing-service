@@ -191,4 +191,51 @@ class ReservationServiceTest {
         verify(reservationRepository, times(1)).save(any(Reservation.class));
     }
 
+    @Test
+    void 예약_취소_성공() {
+        // given
+        Long reservationId = 1L;
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        PrincipalDetails mockPrincipal = mock(PrincipalDetails.class);
+        doReturn(mockPrincipal).when(authentication).getPrincipal();
+        doReturn("user@example.com").when(mockPrincipal).getEmail();
+
+        User mockUser = User.builder()
+            .email("user@example.com")
+            .build();
+        ReflectionTestUtils.setField(mockUser, "id", 100L);
+
+        when(userRepository.findByEmailAndStatus("user@example.com", true))
+            .thenReturn(Optional.of(mockUser));
+
+        Performance mockPerformance = mock(Performance.class);
+        PerformanceSeat mockSeat = mock(PerformanceSeat.class);
+        PerformanceGrade mockGrade = mock(PerformanceGrade.class);
+
+        when(mockSeat.getGrade()).thenReturn("VIP");
+        when(mockGrade.getName()).thenReturn("VIP");
+        when(mockPerformance.getPerformanceGradeList()).thenReturn(List.of(mockGrade));
+
+        Reservation mockReservation = Reservation.builder()
+            .price(3000.0)
+            .reservationStatus(ReservationStatus.CONFIRMED)
+            .performance(mockPerformance)
+            .performanceSeat(mockSeat)
+            .user(mockUser)
+            .build();
+
+        when(reservationRepository.findById(reservationId)).thenReturn(
+            Optional.of(mockReservation));
+
+        // when
+        reservationService.cancelReservation(reservationId);
+
+        // then
+        assertThat(mockReservation.getReservationStatus()).isEqualTo(ReservationStatus.CANCELLED);
+        verify(performanceSeatRepository, times(1)).save(any(PerformanceSeat.class));
+        verify(reservationRepository, times(1)).save(any(Reservation.class));
+    }
 }

@@ -167,5 +167,46 @@ public class ReservationService {
         return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER"));
     }
 
+    public void cancelReservation(Long reservationId) {
+        // 로그인 유저 확인
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = ((PrincipalDetails) authentication.getPrincipal()).getEmail();
+
+        User user = userRepository.findByEmailAndStatus(email, true)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 예약 조회
+        Reservation reservation = reservationRepository.findById(reservationId)
+            .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        // 사용자가 본인의 예약을 취소하거나 관리자만 취소 가능
+        if (!reservation.getUser().getId().equals(user.getId()) && !isAdmin(authentication)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        // 예약 상태 확인 (이미 취소된 예약인지 확인)
+        if (reservation.getReservationStatus() == ReservationStatus.CANCELLED) {
+            throw new CustomException(ErrorCode.ALREADY_CANCELLED);
+        }
+
+        // 좌석 상태 변경 (예약 해제)
+        PerformanceSeat performanceSeat = reservation.getPerformanceSeat();
+        performanceSeat.setReserved(false);
+        performanceSeatRepository.save(performanceSeat);
+
+        // 공연 등급 정보 가져오기
+        Performance performance = reservation.getPerformance();
+        PerformanceGrade performanceGrade = performance.getPerformanceGradeList().stream()
+            .filter(pg -> pg.getName().equals(performanceSeat.getGrade()))
+            .findFirst()
+            .orElseThrow(() -> new CustomException(ErrorCode.PERFORMANCE_GRADE_NOT_FOUND));
+
+        // 공연 등급의 예약 카운트 감소 (취소된 만큼 복구)
+        performanceGrade.cancelPerformance();
+
+        // 예약 취소 처리
+        reservation.setReservationStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(reservation);
+    }
 
 }

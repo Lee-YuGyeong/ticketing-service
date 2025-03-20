@@ -56,7 +56,19 @@ public enum ErrorCode {
     UNAUTHORIZED_ACCESS("/errors/unauthorized-access",
         "UNAUTHORIZED ACCESS",
         HttpStatus.CONFLICT,
-        "권한이 없습니다.");
+        "권한이 없습니다."),
+    RESERVATION_NOT_FOUND("/errors/reservation-not-found",
+        "RESERVATION NOT FOUND",
+        HttpStatus.CONFLICT,
+        "예약 내역이 없습니다."),
+    ALREADY_CANCELLED("/errors/already-cancelled",
+        "ALREADY_CANCELLED",
+        HttpStatus.CONFLICT,
+        "이미 취소된 예약입니다."),
+    RESERVATION_CANCEL("/errors/reservation-cancel",
+        "RESERVATION_CANCEL_ERROR",
+        HttpStatus.CONFLICT,
+        "예약된 좌석이 업습니다.");
 
 
     private final String type;

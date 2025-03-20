@@ -1,5 +1,7 @@
 package com.yugyeong.ticketing_service.domain.entity;
 
+import com.yugyeong.ticketing_service.presentation.exception.CustomException;
+import com.yugyeong.ticketing_service.presentation.response.error.ErrorCode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -49,5 +51,12 @@ public class Reservation extends BaseEntity {
         this.performance = performance;
         this.performanceSeat = performanceSeat;
         this.user = user;
+    }
+
+    public void setReservationStatus(ReservationStatus reservationStatus) {
+        if (this.reservationStatus == ReservationStatus.CANCELLED) {
+            throw new CustomException(ErrorCode.ALREADY_CANCELLED);
+        }
+        this.reservationStatus = ReservationStatus.CANCELLED;
     }
 }

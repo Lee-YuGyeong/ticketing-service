@@ -68,4 +68,11 @@ public class PerformanceGrade extends BaseEntity {
 
         remainSeats -= 1;
     }
+
+    public void cancelPerformance() {
+        if (remainSeats <= 0) {
+            throw new CustomException(ErrorCode.RESERVATION_CANCEL);
+        }
+        remainSeats--; // 예약 좌석 개수 감소
+    }
 }
